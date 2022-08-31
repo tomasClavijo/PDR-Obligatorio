@@ -8,9 +8,9 @@ namespace LKdin
 {
     public class Usuario
     {
-        String UserId { get; set; }
-        String Name { get; set; }
-        String Password { get; set; }
+        public String UserId { get; set; }
+        public String Name { get; set; }
+        public String Password { get; set; }
 
         
 
