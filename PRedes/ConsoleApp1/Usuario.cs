@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace LKdin
 {
-    internal class StartUp
+    public class Usuario
     {
-        static void Main(string[] args)
-        {
-        }
+        String UserId { get; set; }
+        String Name { get; set; }
+        String Password { get; set; }
+
+        
+
     }
 }
