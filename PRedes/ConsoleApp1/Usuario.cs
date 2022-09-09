@@ -12,7 +12,6 @@ namespace LKdin
         public String Name { get; set; }
         public String Password { get; set; }
 
-        
 
     }
 }

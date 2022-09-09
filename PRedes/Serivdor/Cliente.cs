@@ -42,7 +42,6 @@ namespace Serivdor
             }
             socketCliente.Shutdown(SocketShutdown.Both);
             socketCliente.Close();
-            Console.ReadLine();
         }
     }
 }
