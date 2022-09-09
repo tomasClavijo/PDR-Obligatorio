@@ -1,0 +1,8 @@
+C:\Users\lucas\Desktop\PRedes\PRedes\Serivdor\bin\Debug\Serivdor.exe.config
+C:\Users\lucas\Desktop\PRedes\PRedes\Serivdor\bin\Debug\Serivdor.exe
+C:\Users\lucas\Desktop\PRedes\PRedes\Serivdor\bin\Debug\Serivdor.pdb
+C:\Users\lucas\Desktop\PRedes\PRedes\Serivdor\obj\Debug\Cliente.csproj.AssemblyReference.cache
+C:\Users\lucas\Desktop\PRedes\PRedes\Serivdor\obj\Debug\Cliente.csproj.SuggestedBindingRedirects.cache
+C:\Users\lucas\Desktop\PRedes\PRedes\Serivdor\obj\Debug\Cliente.csproj.CoreCompileInputs.cache
+C:\Users\lucas\Desktop\PRedes\PRedes\Serivdor\obj\Debug\Serivdor.exe
+C:\Users\lucas\Desktop\PRedes\PRedes\Serivdor\obj\Debug\Serivdor.pdb
