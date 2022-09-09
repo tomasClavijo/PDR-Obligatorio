@@ -8,8 +8,9 @@ namespace LKdin
 {
     public class Mensajeria
     {
-        public List<String> mensajes { get; set; }
-        public Perfil perfil1 { get; set; }
-        public Perfil perfil2 { get; set; }
+        public String mensajes { get; set; }
+        public Perfil Emisor { get; set; }
+        public Perfil Receptor { get; set; }
+        public bool Leido { get; set; }
     }
 }

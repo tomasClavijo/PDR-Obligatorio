@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Linq.Expressions;
@@ -12,6 +13,7 @@ namespace LKdin
     {
         List<Usuario> Usuarios { get; set; }
         List<Perfil> Perfiles { get; set; }
+        List<Mensajeria> Mensajes { get; set; }
 
 
         public void AltaUsuario(String userId, String password)
@@ -29,6 +31,8 @@ namespace LKdin
             Perfiles.Add(perfil);
         }
 
+        
+
         public Usuario BuscarUsuarioId(String idUsuario)
         {
             Usuario usuario = new Usuario();
@@ -40,18 +44,39 @@ namespace LKdin
                     return Usuarios[i];
                 }
             }
+            throw new Exception();
+        }
+
+        public Perfil BuscarPerfilId(String idPerfil)
+        {
+            
+            for (int i = 0; i < Perfiles.Count; i++)
+            {
+                if (Perfiles[i].UserId.Equals(idPerfil))
+                {
+                    return Perfiles[i];
+                }
+            }
+            throw new Exception();
+        }
+
+        public void AsociarFoto(Perfil perfil, String foto)
+        {
+            perfil.Imagen = new Bitmap(foto);
         }
 
         public List<Usuario> BuscarUsuarioNombre(String Nombre){
+            List<Usuario> retorno = new List<Usuario>();
             Usuario usuario = new Usuario();
             usuario.Name = Nombre;
-            for (int i = 0; i < Usuario.Count; i++)
+            for (int i = 0; i < Usuarios.Count; i++)
             {
-                if (Usuario[i].Name.Equals(usuario.Name))
+                if (Usuarios[i].Name.Equals(usuario.Name))
                 {
-                    return Usuarios[i];
+                    retorno.Add( Usuarios[i]);
                 }
             }
+            return retorno;
         }
 
         public List<Perfil> BuscarPorHabilidad(List<String> habilidades)
@@ -79,6 +104,32 @@ namespace LKdin
                 }
             }
             return coincidente;
+        }
+
+        public List<Mensajeria> MensajesRecibidos (Perfil receptor)
+        {
+            List<Mensajeria> mensajesRecibidos = new List<Mensajeria>(); 
+            for (int i = 0; i < Mensajes.Count; i++)
+            {
+                Mensajeria mensaje = Mensajes[i];
+                if (mensaje.Receptor.Equals(receptor))
+                {
+                    
+                    mensajesRecibidos.Add(mensaje);
+                    mensaje.Leido = true;
+                    
+                }
+            }
+            return mensajesRecibidos;
+        }
+
+        public  void EnviarMensaje (string mensaje, Perfil emisor, Perfil receptor)
+        {
+            Mensajeria enviarMensaje = new Mensajeria();
+            enviarMensaje.mensajes = mensaje;
+            enviarMensaje.Emisor = emisor;
+            enviarMensaje.Receptor = receptor;
+            Mensajes.Add(enviarMensaje);
         }
 
         public Controlador()
