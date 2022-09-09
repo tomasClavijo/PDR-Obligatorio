@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.IsolatedStorage;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,11 +31,27 @@ namespace LKdin
 
         public Usuario BuscarUsuarioId(String idUsuario)
         {
-            return null;
+            Usuario usuario = new Usuario();
+            usuario.UserId = idUsuario;
+            for (int i = 0; i < Usuarios.Count; i++)
+            {
+                if (Usuarios[i].UserId.Equals(usuario.UserId))
+                {
+                    return Usuarios[i];
+                }
+            }
         }
 
         public List<Usuario> BuscarUsuarioNombre(String Nombre){
-            return null;
+            Usuario usuario = new Usuario();
+            usuario.Name = Nombre;
+            for (int i = 0; i < Usuario.Count; i++)
+            {
+                if (Usuario[i].Name.Equals(usuario.Name))
+                {
+                    return Usuarios[i];
+                }
+            }
         }
 
         public List<Perfil> BuscarPorHabilidad(List<String> habilidades)
