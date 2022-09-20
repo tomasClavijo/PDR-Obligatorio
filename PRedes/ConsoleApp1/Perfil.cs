@@ -22,5 +22,10 @@ namespace LKdin
             this.Password = usuario.Password;
         }
 
+        public bool Equals(Perfil perfil)
+        {
+            return this.UserId.Equals(perfil.UserId);
+        }
+
     }
 }

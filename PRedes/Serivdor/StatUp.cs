@@ -4,17 +4,16 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace LKdin
+namespace Usuario
 {
-    internal class StartUp
+    internal class StatUp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Inicia Servidor");
-            Servidor servidor = new Servidor();
+            Console.WriteLine("Inicia cliente");
+            ClienT cliente = new ClienT();
         }
     }
 }

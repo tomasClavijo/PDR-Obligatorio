@@ -28,7 +28,14 @@ namespace LKdin
             Perfil perfil = new Perfil(usuario);
             perfil.Descripcion = descripcion;
             perfil.Habilidades = habilidades;
-            Perfiles.Add(perfil);
+            if (!Perfiles.Contains(perfil))
+            {
+                Perfiles.Add(perfil);
+            }
+            else
+            {
+                throw new Exception("El perfil ya existe");
+            }
         }
 
         
