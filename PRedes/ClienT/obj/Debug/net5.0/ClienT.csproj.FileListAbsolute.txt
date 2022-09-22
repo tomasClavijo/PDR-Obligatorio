@@ -1,0 +1,16 @@
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\obj\Debug\net5.0\ClienT.csproj.AssemblyReference.cache
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\obj\Debug\net5.0\ClienT.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\obj\Debug\net5.0\ClienT.AssemblyInfoInputs.cache
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\obj\Debug\net5.0\ClienT.AssemblyInfo.cs
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\obj\Debug\net5.0\ClienT.csproj.CoreCompileInputs.cache
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\bin\Debug\net5.0\ClienT.exe
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\bin\Debug\net5.0\ClienT.deps.json
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\bin\Debug\net5.0\ClienT.runtimeconfig.json
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\bin\Debug\net5.0\ClienT.runtimeconfig.dev.json
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\bin\Debug\net5.0\ClienT.dll
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\bin\Debug\net5.0\ClienT.pdb
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\obj\Debug\net5.0\ClienT.dll
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\obj\Debug\net5.0\refint\ClienT.dll
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\obj\Debug\net5.0\ClienT.pdb
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\obj\Debug\net5.0\ClienT.genruntimeconfig.cache
+C:\Users\lucas\Desktop\PRedes\PRedes\ClienT\obj\Debug\net5.0\ref\ClienT.dll

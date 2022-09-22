@@ -50,5 +50,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Protocolo\Protocolo.csproj">
+      <Project>{7a838c31-590c-4dc9-b428-bfad50941dff}</Project>
+      <Name>Protocolo</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

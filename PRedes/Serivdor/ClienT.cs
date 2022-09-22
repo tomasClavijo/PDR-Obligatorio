@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace Usuario
 {
@@ -17,6 +18,7 @@ namespace Usuario
         EndPoint endPointLocal;
         EndPoint endPointRemoto;
         Guid session;
+        ManejoDataSocket manejoDeSocket;
 
         public ClienT()
         {
@@ -65,7 +67,7 @@ namespace Usuario
                         String username = Console.ReadLine();
                         Console.WriteLine("Ingrese contraseña");
                         String password = Console.ReadLine();
-                        //Guid session = AltaUsuario();
+                        //Guid session = AltaUsuario(username, password);
                         break;
                     case "3":
                         Console.WriteLine("Crear su perfil de usuario");
@@ -153,6 +155,14 @@ namespace Usuario
             return opcion;
         }
 
+        public Guid AltaUsuario(String usernameS, String passwordS)
+        {
+            byte[] username = Encoding.UTF8.GetBytes(usernameS);
+            byte[] password = Encoding.UTF8.GetBytes(passwordS);
+            
+            return session;
+        }
+    }
 
         public void CerrarConexion()
         {

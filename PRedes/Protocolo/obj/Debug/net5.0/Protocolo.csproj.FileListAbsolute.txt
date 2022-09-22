@@ -1,0 +1,12 @@
+C:\Users\lucas\Desktop\PRedes\PRedes\Protocolo\bin\Debug\net5.0\Protocolo.deps.json
+C:\Users\lucas\Desktop\PRedes\PRedes\Protocolo\bin\Debug\net5.0\Protocolo.dll
+C:\Users\lucas\Desktop\PRedes\PRedes\Protocolo\bin\Debug\net5.0\Protocolo.pdb
+C:\Users\lucas\Desktop\PRedes\PRedes\Protocolo\obj\Debug\net5.0\Protocolo.csproj.AssemblyReference.cache
+C:\Users\lucas\Desktop\PRedes\PRedes\Protocolo\obj\Debug\net5.0\Protocolo.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\lucas\Desktop\PRedes\PRedes\Protocolo\obj\Debug\net5.0\Protocolo.AssemblyInfoInputs.cache
+C:\Users\lucas\Desktop\PRedes\PRedes\Protocolo\obj\Debug\net5.0\Protocolo.AssemblyInfo.cs
+C:\Users\lucas\Desktop\PRedes\PRedes\Protocolo\obj\Debug\net5.0\Protocolo.csproj.CoreCompileInputs.cache
+C:\Users\lucas\Desktop\PRedes\PRedes\Protocolo\obj\Debug\net5.0\Protocolo.dll
+C:\Users\lucas\Desktop\PRedes\PRedes\Protocolo\obj\Debug\net5.0\refint\Protocolo.dll
+C:\Users\lucas\Desktop\PRedes\PRedes\Protocolo\obj\Debug\net5.0\Protocolo.pdb
+C:\Users\lucas\Desktop\PRedes\PRedes\Protocolo\obj\Debug\net5.0\ref\Protocolo.dll
