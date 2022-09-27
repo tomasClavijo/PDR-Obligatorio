@@ -89,6 +89,22 @@ namespace LKAdin
             return retorno;
         }
 
+        public Usuario BuscarUsuarioGuid(Guid guid)
+        {
+            
+            Usuario usuario = new Usuario();
+            usuario.guid = guid;
+            for (int i = 0; i < Usuarios.Count; i++)
+            {
+                if (Usuarios[i].guid.Equals(usuario.guid))
+                {
+                    return Usuarios[i];
+                }
+            }
+            throw new Exception();
+            
+        }
+
         public List<Perfil> BuscarPorHabilidad(List<String> habilidades)
         {
             List<Perfil> coincidente = new List<Perfil>();

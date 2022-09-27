@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using Protocolo;
+using System.IO.IsolatedStorage;
+using System.Threading;
 
 namespace ClienT
 {
@@ -63,7 +65,7 @@ namespace ClienT
                 {
                     case "1":
                         Console.WriteLine("Conectando al servidor a través de datos asociados...");
-                        //ConectarAlServidor();
+                        Thread.Sleep(10000);
                         Console.WriteLine("Conexión establecida");
                         break;
                     case "2":
@@ -77,6 +79,8 @@ namespace ClienT
                         break;
                     case "3":
                         Console.WriteLine("Crear su perfil de usuario");
+                        Console.WriteLine("Ingrese descripcion de su perfil");
+
                         String descripcion = Console.ReadLine();
 
                         String habilidad;
@@ -90,7 +94,7 @@ namespace ClienT
                                 habilidades.Add(habilidad);
                             }
                         } while (habilidad != "X");
-                        //CrearPerfil(descripcion, habilidades);
+                        CrearPerfil(descripcion, habilidades);
                         break;
                     case "4":
                         Console.WriteLine("Asociar foto al perfil, \n Introduzca ruta de la misma");
@@ -164,34 +168,89 @@ namespace ClienT
 
         public void AltaUsuario(String usernameS, String passwordS, String id)
         {
-            int largo = usernameS.Length + passwordS.Length + id.Length +  2;
-            String header = "REQ" + "02" + largo.ToString().PadLeft(4, '0');
-            String mensaje = usernameS + "#" + passwordS + "#" + id;
-            byte[] headerBytes = Encoding.UTF8.GetBytes(header);
-            byte[] mensajeBytes = Encoding.UTF8.GetBytes(mensaje);
+            int largo = usernameS.Length + passwordS.Length + id.Length + 2;
+            String mensaje = usernameS + "|" + passwordS + "|" + id;
 
-            /*
-            String tipoDeMensaje = "REQ";
-            byte[] tipoEnBytes = Encoding.UTF8.GetBytes(header);
-            int codigoDeMensaje = 2;
-            byte[] codigoEnBytes = BitConverter.GetBytes(codigoDeMensaje);
-            byte[] largoEnBytes = BitConverter.GetBytes(largo);
-            byte[] mensajeEnBytes = Encoding.UTF8.GetBytes(mensaje);
-            manejoDataSocket.Send(tipoEnBytes);
-            manejoDataSocket.Send(codigoEnBytes);
-            manejoDataSocket.Send(largoEnBytes);
-            manejoDataSocket.Send(mensajeEnBytes);
-            */
+            envio("REQ", "02", largo, mensaje, manejoDataSocket);
 
-            manejoDataSocket.Send(headerBytes);
-            manejoDataSocket.Send(mensajeBytes);
-            byte[] recive = manejoDataSocket.Recive(9);
-            byte[] guid = manejoDataSocket.Recive(36); //Esto podria ser variable
-            String guidString = Encoding.UTF8.GetString(guid);
-            session = Guid.Parse(guidString);
-            Console.WriteLine("Sesion iniciada con el id: " + session);
+            List<String> retorno = recibo(manejoDataSocket);
+
+            for (int i = 0; i < retorno.Count; i++)
+            {
+                Console.WriteLine("Sesion iniciada con el id: " + retorno[i]);
+            }
         }
 
+        public void CrearPerfil(String descripcion, List<String> habilidades)
+        {
+
+            int largoDescripcion = descripcion.Length;
+
+            StringBuilder habilidad = new StringBuilder();
+
+            habilidad.Append(descripcion + "|");
+            habilidad.Append(session.ToString() + "|");
+
+            for (int i = 0; i < habilidades.Count - 1; i++)
+            {
+
+                habilidad.Append(habilidades[i] + "|");
+
+            }
+
+            habilidad.Append(habilidades[habilidades.Count - 1]);
+
+            String skills = habilidad.ToString();
+
+            int largoHabilidades = skills.Length;
+
+            envio("RES", "03", largoHabilidades, skills, manejoDataSocket);
+            List<String> respuesta = recibo(manejoDataSocket);
+
+            for (int i = 0; i < respuesta.Count; i++)
+            {
+                Console.WriteLine(respuesta[i]);
+            }
+
+        }
+
+        public static void envio(String tipo, String comando, int largo, String mensaje, ManejoDataSocket socket)
+        {
+
+            byte[] tipoEnBytes = Encoding.UTF8.GetBytes(tipo);
+            byte[] codigoEnBytes = Encoding.UTF8.GetBytes(comando);
+            byte[] largoEnBytes = BitConverter.GetBytes(largo);
+            byte[] mensajeEnBytes = Encoding.UTF8.GetBytes(mensaje);
+
+            socket.Send(tipoEnBytes);
+            socket.Send(codigoEnBytes);
+            socket.Send(largoEnBytes);
+            socket.Send(mensajeEnBytes);
+        }
+
+
+        public static List<String> recibo(ManejoDataSocket manejo)
+        {
+            List<String> retorno = new List<string>();
+            byte[] tiopoMensaje = manejo.Recive(3);
+            String tipo = Encoding.UTF8.GetString(tiopoMensaje);
+            byte[] comandMensaje = manejo.Recive(2);
+            String comando = Encoding.UTF8.GetString(comandMensaje);
+            byte[] largoMensaje = manejo.Recive(4);
+            int largo = BitConverter.ToInt32(largoMensaje);
+            byte[] mensaje = manejo.Recive(largo);
+            String mensajeString = Encoding.UTF8.GetString(mensaje);
+            var mensajeDescomprimido = mensajeString.Split("|");
+            retorno.Add(tipo);
+            retorno.Add(comando);
+            retorno.Add(largo.ToString());
+            for (int i = 0; i < mensajeDescomprimido.Length; i++)
+            {
+                retorno.Add(mensajeDescomprimido[i]);
+            }
+            return retorno;
+        }
+        
         public void CerrarConexion()
         {
             socketCliente.Shutdown(SocketShutdown.Both);
