@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using Protocolo;
 using System.IO.IsolatedStorage;
 using System.Threading;
+using Communication;
 
 namespace ClienT
 {
@@ -89,21 +90,21 @@ namespace ClienT
                         {
                             Console.WriteLine("Ingrese una habilidad o (X) para salir");
                             habilidad = Console.ReadLine();
-                            if (habilidad != "X")
+                            if (habilidad != "X" && habilidad != "x")
                             {
                                 habilidades.Add(habilidad);
                             }
-                        } while (habilidad != "X");
+                        } while (habilidad != "X" && habilidad != "x");
                         CrearPerfil(descripcion, habilidades);
                         break;
                     case "4":
                         Console.WriteLine("Asociar foto al perfil, \n Introduzca ruta de la misma");
                         string ruta = Console.ReadLine();
-                        //AsociarFoto(imagen);
+                        AsociarFoto(ruta);
                         break;
                     case "5":
                         Console.WriteLine("Consultar perfiles existentes");
-                        Console.WriteLine("1)Consultar por nombre \n2)Consultar por palabra clave");
+                        Console.WriteLine("1)Consultar por nombre \n2)Consultar por palabra clave \n3)Consultar por id");
                         int buscarPor = Int32.Parse(Console.ReadLine());
                         switch (buscarPor)
                             
@@ -111,7 +112,8 @@ namespace ClienT
                             case 1:
                                 Console.WriteLine("Introduzca nombre del usuario");
                                 String nombre = Console.ReadLine();
-                                //BuscarPorNombre(nombre);
+                                Console.WriteLine("Perfiles:");
+                                BuscarPorNombre(nombre);
                                 break;
                             case 2:
                                 String habilidadABuscar;
@@ -120,12 +122,19 @@ namespace ClienT
                                 {
                                     Console.WriteLine("Ingrese una habilidad o (X) para salir");
                                     habilidadABuscar = Console.ReadLine();
-                                    if (habilidadABuscar != "X")
+                                    if (habilidadABuscar != "X" && habilidadABuscar != "x")
                                     {
                                         habilidadesABuscar.Add(habilidadABuscar);
                                     }
-                                } while (habilidadABuscar != "X");
-                                //BuscarPorHAbilidades(habilidadesABuscar);
+                                } while (habilidadABuscar != "X" && habilidadABuscar != "x");
+                                Console.WriteLine("Perfiles:");
+                                BuscarPorHabilidades(habilidadesABuscar);
+                                break;
+                            case 3:
+                                Console.WriteLine("Introduzca el id a buscar");
+                                String id = Console.ReadLine();
+                                Console.WriteLine("Perfiles:");
+                                BuscarPorId(id);
                                 break;
                             default:
                                 Console.WriteLine("Opcion incorrecta");
@@ -143,10 +152,10 @@ namespace ClienT
                                 String nombre = Console.ReadLine();
                                 Console.WriteLine("Introduzca mensaje");
                                 String mensaje = Console.ReadLine();
-                                //EnviarMensaje(nombre, mensaje);
+                                EnviarMensaje(nombre, mensaje);
                                 break;
                             case 2:
-                                //RecibirMensajes();
+                                RecibirMensajes();
                                 break;
                             default:
                                 Console.WriteLine("Opcion incorrecta");
@@ -171,14 +180,19 @@ namespace ClienT
             int largo = usernameS.Length + passwordS.Length + id.Length + 2;
             String mensaje = usernameS + "|" + passwordS + "|" + id;
 
-            envio("REQ", "02", largo, mensaje, manejoDataSocket);
+            StructuralMessage.envio("REQ", "02", largo, mensaje, manejoDataSocket);
 
-            List<String> retorno = recibo(manejoDataSocket);
-
-            for (int i = 0; i < retorno.Count; i++)
+            List<String> retorno = StructuralMessage.recibo(manejoDataSocket);
+            if(retorno[3] == Guid.Empty.ToString())
             {
-                Console.WriteLine("Sesion iniciada con el id: " + retorno[i]);
+                Console.WriteLine("El usuario ya existe");
             }
+            else{
+                session = Guid.Parse(retorno[3]);
+
+                Console.WriteLine("Sesion iniciada");
+            }
+ 
         }
 
         public void CrearPerfil(String descripcion, List<String> habilidades)
@@ -204,53 +218,77 @@ namespace ClienT
 
             int largoHabilidades = skills.Length;
 
-            envio("RES", "03", largoHabilidades, skills, manejoDataSocket);
-            List<String> respuesta = recibo(manejoDataSocket);
+            StructuralMessage.envio("REQ", "03", largoHabilidades, skills, manejoDataSocket);
+            List<String> respuesta = StructuralMessage.recibo(manejoDataSocket);
+            Console.WriteLine("Perfil creado exitosamente");
 
-            for (int i = 0; i < respuesta.Count; i++)
+        }
+
+        public void AsociarFoto(String ruta)
+        {
+            FileCommsHandler fileCommsHandler = new FileCommsHandler(socketCliente);
+            fileCommsHandler.SendFile(ruta);
+            Console.WriteLine("Imagen asociada con exito");
+        }
+
+
+        public void BuscarPorNombre(String nombre)
+        {
+            int largo = nombre.Length;
+            StructuralMessage.envio("REQ", "51", largo, nombre, manejoDataSocket);
+            List<String> respuesta = StructuralMessage.recibo(manejoDataSocket);
+            Console.WriteLine(respuesta[3]);
+        }
+        public void BuscarPorHabilidades(List<String> habilidades)
+        {
+            StringBuilder habilidad = new StringBuilder();
+
+
+            for (int i = 0; i < habilidades.Count - 1; i++)
             {
-                Console.WriteLine(respuesta[i]);
+
+                habilidad.Append(habilidades[i] + "|");
+
             }
 
+            habilidad.Append(habilidades[habilidades.Count - 1]);
+
+            String skills = habilidad.ToString();
+
+            int largoHabilidades = skills.Length;
+
+            StructuralMessage.envio("REQ", "52", largoHabilidades, skills, manejoDataSocket);
+            List<String> respuesta = StructuralMessage.recibo(manejoDataSocket);
+            Console.WriteLine(respuesta[3]);
         }
 
-        public static void envio(String tipo, String comando, int largo, String mensaje, ManejoDataSocket socket)
+        public void BuscarPorId(String id)
         {
-
-            byte[] tipoEnBytes = Encoding.UTF8.GetBytes(tipo);
-            byte[] codigoEnBytes = Encoding.UTF8.GetBytes(comando);
-            byte[] largoEnBytes = BitConverter.GetBytes(largo);
-            byte[] mensajeEnBytes = Encoding.UTF8.GetBytes(mensaje);
-
-            socket.Send(tipoEnBytes);
-            socket.Send(codigoEnBytes);
-            socket.Send(largoEnBytes);
-            socket.Send(mensajeEnBytes);
+            int largo = id.Length;
+            StructuralMessage.envio("REQ", "53", largo, id, manejoDataSocket);
+            List<String> respuesta = StructuralMessage.recibo(manejoDataSocket);
+            Console.WriteLine(respuesta[3]);
         }
 
-
-        public static List<String> recibo(ManejoDataSocket manejo)
+        public void EnviarMensaje(String userName, String mensaje)
         {
-            List<String> retorno = new List<string>();
-            byte[] tiopoMensaje = manejo.Recive(3);
-            String tipo = Encoding.UTF8.GetString(tiopoMensaje);
-            byte[] comandMensaje = manejo.Recive(2);
-            String comando = Encoding.UTF8.GetString(comandMensaje);
-            byte[] largoMensaje = manejo.Recive(4);
-            int largo = BitConverter.ToInt32(largoMensaje);
-            byte[] mensaje = manejo.Recive(largo);
-            String mensajeString = Encoding.UTF8.GetString(mensaje);
-            var mensajeDescomprimido = mensajeString.Split("|");
-            retorno.Add(tipo);
-            retorno.Add(comando);
-            retorno.Add(largo.ToString());
-            for (int i = 0; i < mensajeDescomprimido.Length; i++)
-            {
-                retorno.Add(mensajeDescomprimido[i]);
-            }
-            return retorno;
+            String envio = userName + "|" + mensaje + "|" + session.ToString();
+            int largo = envio.Length;
+            StructuralMessage.envio("REQ", "61", largo, envio, manejoDataSocket);
+            List<String> respuesta = StructuralMessage.recibo(manejoDataSocket);
+            Console.WriteLine(respuesta[3]);
         }
-        
+
+        public void RecibirMensajes()
+        {
+            String envio = session.ToString();
+            int largo = envio.Length;
+            StructuralMessage.envio("REQ", "62", largo, envio, manejoDataSocket);
+            List<String> respuesta = StructuralMessage.recibo(manejoDataSocket);
+            Console.WriteLine(respuesta[3]);
+
+        }
+
         public void CerrarConexion()
         {
             socketCliente.Shutdown(SocketShutdown.Both);

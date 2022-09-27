@@ -8,10 +8,16 @@ namespace LKAdin
 {
     public class Usuario
     {
+
         public String UserId { get; set; }
         public String Name { get; set; }
         public String Password { get; set; }
         public Guid guid { get; set; }
+
+        public bool Equals(Usuario user)
+        {
+            return this.UserId.Equals(user);
+        }
 
     }
 }

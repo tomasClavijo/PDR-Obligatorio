@@ -21,11 +21,29 @@ namespace LKAdin
             this.UserId = usuario.UserId;
             this.Name = usuario.Name;
             this.Password = usuario.Password;
+            this.guid = usuario.guid;
         }
 
         public bool Equals(Perfil perfil)
         {
-            return this.UserId.Equals(perfil.UserId);
+            return this.guid.Equals(perfil.guid);
+        }
+
+        public String habilidadesToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < Habilidades.Count; i++)
+            {
+                sb.AppendLine("  -"+Habilidades[i]);
+            }
+            return sb.ToString();
+        }
+
+        public  String ToString()
+        {
+            return this.Name + "\n" +
+                "Descripcion: \n" + this.Descripcion + "\nHabilidades: \n" + habilidadesToString();
+
         }
 
     }

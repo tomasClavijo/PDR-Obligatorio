@@ -16,7 +16,7 @@ namespace Protocolo
             int size = buffer.Length;
             while (offset < size)
             {
-                int sent = _socket.Send(buffer, offset - size, SocketFlags.None);
+                int sent = _socket.Send(buffer, offset, size - offset, SocketFlags.None);
                 if (sent == 0)
                 {
                     throw new SocketException();
@@ -31,7 +31,7 @@ namespace Protocolo
             int offset = 0;
             while (offset < size)
             {
-                int recived = _socket.Receive(buffer, offset - size, SocketFlags.None);
+                int recived = _socket.Receive(buffer, offset, size - offset, SocketFlags.None);
                 if (recived == 0)
                 {
                     throw new SocketException();

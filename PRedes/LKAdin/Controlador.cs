@@ -23,6 +23,15 @@ namespace LKAdin
             usuario.Password = password;
             usuario.UserId = Id;
             usuario.guid = Guid.NewGuid();
+            bool found = false;
+            foreach(Usuario u in Usuarios)
+            {
+                found = u.Equals(usuario);
+            }
+            if (found)
+            {
+                return Guid.Empty;
+            }
             Usuarios.Add(usuario);
             return usuario.guid;
         }
@@ -57,9 +66,39 @@ namespace LKAdin
             throw new Exception();
         }
 
-        public Perfil BuscarPerfilId(String idPerfil)
+        public String BuscarPerfilId(String idPerfil)
         {
-            
+
+            StringBuilder retorno = new StringBuilder();
+
+            for (int i = 0; i < Perfiles.Count; i++)
+            {
+                if (Perfiles[i].UserId.Equals(idPerfil))
+                {
+                    retorno.Append(Perfiles[i].ToString());
+                    retorno.Append("---------------------------");
+                }
+            }
+            return retorno.ToString();
+        }
+
+        public Perfil BuscarPerfilGuid(Guid guidPerfil)
+        {
+
+
+            for (int i = 0; i < Perfiles.Count; i++)
+            {
+                if (Perfiles[i].guid.Equals(guidPerfil))
+                {
+                    return Perfiles[i];
+                }
+            }
+            return null;
+        }
+
+        public Perfil BuscarPerfilUserId(String idPerfil)
+        {
+
             for (int i = 0; i < Perfiles.Count; i++)
             {
                 if (Perfiles[i].UserId.Equals(idPerfil))
@@ -67,7 +106,7 @@ namespace LKAdin
                     return Perfiles[i];
                 }
             }
-            throw new Exception();
+            return null;
         }
 
         public void AsociarFoto(Perfil perfil, String foto)
@@ -75,18 +114,18 @@ namespace LKAdin
             perfil.Imagen = new Bitmap(foto);
         }
 
-        public List<Usuario> BuscarUsuarioNombre(String Nombre){
-            List<Usuario> retorno = new List<Usuario>();
-            Usuario usuario = new Usuario();
-            usuario.Name = Nombre;
-            for (int i = 0; i < Usuarios.Count; i++)
+        public String BuscarUsuarioNombre(String Nombre){
+            StringBuilder retorno = new StringBuilder();
+
+            for (int i = 0; i < Perfiles.Count; i++)
             {
-                if (Usuarios[i].Name.Equals(usuario.Name))
+                if (Perfiles[i].Name.ToLower().Contains(Nombre.ToLower()))
                 {
-                    retorno.Add( Usuarios[i]);
+                    retorno.Append(Perfiles[i].ToString());
+                    retorno.AppendLine("---------------------------");
                 }
             }
-            return retorno;
+            return retorno.ToString();
         }
 
         public Usuario BuscarUsuarioGuid(Guid guid)
@@ -105,15 +144,15 @@ namespace LKAdin
             
         }
 
-        public List<Perfil> BuscarPorHabilidad(List<String> habilidades)
+        public String BuscarPorHabilidad(String[] habilidades)
         {
-            List<Perfil> coincidente = new List<Perfil>();
+            StringBuilder coincidente = new StringBuilder();
             for (int i = 0; i < Perfiles.Count; i++)
             {
 
                 int coincidencias = 0;
                 Perfil perfil = Perfiles[i];
-                for (int j = 0; j < habilidades.Count; j++)
+                for (int j = 0; j < habilidades.Length; j++)
                 {
                     for (int k = 0; k < perfil.Habilidades.Count; k++)
                     {
@@ -123,30 +162,32 @@ namespace LKAdin
                             break;
                         }
                     }
-                    if(coincidencias == habilidades.Count)
+                    if(coincidencias == habilidades.Length)
                     {
-                        coincidente.Add(perfil);
+                        coincidente.Append(perfil.ToString());
+                        coincidente.Append("---------------------------");
+
                     }
                 }
             }
-            return coincidente;
+            return coincidente.ToString();
         }
 
-        public List<Mensajeria> MensajesRecibidos (Perfil receptor)
+        public String MensajesRecibidos (Perfil receptor)
         {
-            List<Mensajeria> mensajesRecibidos = new List<Mensajeria>(); 
+            StringBuilder mensajesRecibidos = new StringBuilder(); 
             for (int i = 0; i < Mensajes.Count; i++)
             {
                 Mensajeria mensaje = Mensajes[i];
-                if (mensaje.Receptor.Equals(receptor))
+                if (mensaje.Receptor.Equals(receptor) && !mensaje.Leido)
                 {
                     
-                    mensajesRecibidos.Add(mensaje);
+                    mensajesRecibidos.Append(mensaje.ToString());
                     mensaje.Leido = true;
                     
                 }
             }
-            return mensajesRecibidos;
+            return mensajesRecibidos.ToString();
         }
 
         public  void EnviarMensaje (string mensaje, Perfil emisor, Perfil receptor)
@@ -162,6 +203,7 @@ namespace LKAdin
         {
             Usuarios = new List<Usuario>();
             Perfiles = new List<Perfil>();
+            Mensajes = new List<Mensajeria>();
         }
     }
 }

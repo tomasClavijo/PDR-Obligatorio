@@ -1,4 +1,5 @@
-﻿using Protocolo;
+﻿using Communication;
+using Protocolo;
 using System;
 using System.Collections.Generic;
 using System.IO.IsolatedStorage;
@@ -78,7 +79,7 @@ namespace LKAdin
                             String id = mensajeDescomprimido[2];
                             Guid guid = control.AltaUsuario(username, password, id);
                             int guidLargo = 36;
-                            envio("RES", "02", guidLargo, guid.ToString(), manejo);
+                            StructuralMessage.envio("RES", "02", guidLargo, guid.ToString(), manejo);
                             break;
                         case "03":
                             String descripcion = mensajeDescomprimido[0];
@@ -92,10 +93,45 @@ namespace LKAdin
                             Usuario usuario = control.BuscarUsuarioGuid(usuarioGuid);
 
                             control.CrearPerfil(usuario, descripcion, habilidades);
-                            envio("RES", "03", 2, "OK", manejo);
-
+                            StructuralMessage.envio("RES", "03", 2, "OK", manejo);
                             break;
-                            
+                        case "04":
+                            FileCommsHandler fileCommsHandler = new FileCommsHandler(socketCliente);
+                            fileCommsHandler.ReceiveFile();
+                            break;
+                        case "51":
+                            String nombre = mensajeString;
+                            String perfiles = control.BuscarUsuarioNombre(nombre);
+                            int largoPerfiles = perfiles.Length;
+                            StructuralMessage.envio("RES", "51", largoPerfiles, perfiles, manejo);
+                            break;
+                        case "52":
+
+                            String perfilesHallados = control.BuscarPorHabilidad(mensajeDescomprimido);
+                            int largoPerfilesHallados = perfilesHallados.Length;
+                            StructuralMessage.envio("RES", "52", largoPerfilesHallados, perfilesHallados, manejo);
+                            break;
+                        case "53":
+                            String idP = mensajeString;
+                            String perfilesId = control.BuscarPerfilId(idP);
+                            int largoPerfilesId = perfilesId.Length;
+                            StructuralMessage.envio("RES", "51", largoPerfilesId, perfilesId, manejo);
+                            break;
+                        case "61":
+                            String nombreUsuario = mensajeDescomprimido[0];
+                            Perfil perfilReceptor = control.BuscarPerfilUserId(nombreUsuario);
+                            String mensajeUsuario = mensajeDescomprimido[1];
+                            Perfil perfilEmsior = control.BuscarPerfilGuid(Guid.Parse(mensajeDescomprimido[2]));
+                            control.EnviarMensaje(mensajeUsuario, perfilEmsior, perfilReceptor);
+                            String respuesta = "Mensaje enviado";
+                            StructuralMessage.envio("RES", "61", respuesta.Length, respuesta, manejo);
+                            break;
+                        case "62":
+                            Perfil perfilRecepcion = control.BuscarPerfilGuid(Guid.Parse(mensajeString));
+                            String mensajes = control.MensajesRecibidos(perfilRecepcion);
+                            StructuralMessage.envio("RES", "52", mensajes.Length, mensajes, manejo);
+                            break;
+
                     }
                 }
 
@@ -104,18 +140,6 @@ namespace LKAdin
             Console.WriteLine("Cliente desconectado");
         }
 
-        public static void envio(String tipo, String comando, int largo, String mensaje, ManejoDataSocket socket)
-        {
 
-            byte[] tipoEnBytes = Encoding.UTF8.GetBytes(tipo);
-            byte[] codigoEnBytes = Encoding.UTF8.GetBytes(comando);
-            byte[] largoEnBytes = BitConverter.GetBytes(largo);
-            byte[] mensajeEnBytes = Encoding.UTF8.GetBytes(mensaje);
-
-            socket.Send(tipoEnBytes);
-            socket.Send(codigoEnBytes);
-            socket.Send(largoEnBytes);
-            socket.Send(mensajeEnBytes);
-        }
     }
 }
