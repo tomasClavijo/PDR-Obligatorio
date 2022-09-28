@@ -494,19 +494,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Administrador\\.nuget\\packages\\": {}
+    "C:\\Users\\lucas\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Administrador\\OneDrive\\Escritorio\\PDR-Obligatorio\\PRedes\\Protocolo\\Protocolo.csproj",
+      "projectUniqueName": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\Protocolo\\Protocolo.csproj",
       "projectName": "Protocolo",
-      "projectPath": "C:\\Users\\Administrador\\OneDrive\\Escritorio\\PDR-Obligatorio\\PRedes\\Protocolo\\Protocolo.csproj",
-      "packagesPath": "C:\\Users\\Administrador\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Administrador\\OneDrive\\Escritorio\\PDR-Obligatorio\\PRedes\\Protocolo\\obj\\",
+      "projectPath": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\Protocolo\\Protocolo.csproj",
+      "packagesPath": "C:\\Users\\lucas\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\Protocolo\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Administrador\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\lucas\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -553,7 +553,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -10,15 +10,44 @@ namespace LKAdin
 {
     public class Perfil : Usuario
     {
-        public List<String> Habilidades { get; set; }
+        public List<String> _habilidades;
+        public String _descripcion;
 
-        public String Descripcion { get; set; }
+        public List<String> Habilidades
+        {
+            get { return _habilidades; }
+            set
+            {
+                if (value is not null && value.Count > 0)
+                {
+                    _habilidades = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Debe ingresar al menos una habilidad");
+                }
+            }
+        }
 
-        public Bitmap Imagen { get; set; }
+        public String Descripcion
+        {
+            get { return _descripcion; }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    _descripcion = value;
+                }
+                else
+                {
+                    throw new ArgumentException("El campo descripcion es obligatorio");
+                }
+            }
+        }
 
         public Perfil(Usuario usuario)
         {
-            this.UserId = usuario.UserId;
+            this.UserName = usuario.UserName;
             this.Name = usuario.Name;
             this.Password = usuario.Password;
             this.guid = usuario.guid;
@@ -34,12 +63,12 @@ namespace LKAdin
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < Habilidades.Count; i++)
             {
-                sb.AppendLine("  -"+Habilidades[i]);
+                sb.AppendLine("  -" + Habilidades[i]);
             }
             return sb.ToString();
         }
 
-        public  String ToString()
+        public String ToString()
         {
             return this.Name + "\n" +
                 "Descripcion: \n" + this.Descripcion + "\nHabilidades: \n" + habilidadesToString();

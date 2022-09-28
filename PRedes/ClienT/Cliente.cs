@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
 using Protocolo;
-using System.IO.IsolatedStorage;
 using System.Threading;
 using Communication;
 
@@ -15,9 +11,7 @@ namespace ClienT
 {
     public class Cliente
     {
-        int puertoRemoto;
-        string ipRemota;
-        string ipLocal;
+
         static Socket socketCliente;
         EndPoint endPointLocal;
         EndPoint endPointRemoto;
@@ -25,42 +19,58 @@ namespace ClienT
         ManejoDataSocket manejoDataSocket;
         
 
-        public Cliente()
+        public Cliente(String ServerIp, int ServerPort, String LocalIp)
         {
-            ConfigurarConexion();
+            ConfigurarConexion(ServerIp, ServerPort, LocalIp);
             manejoDataSocket = new ManejoDataSocket(socketCliente);
             
             Interfaz();
             CerrarConexion();
         }
 
-        public void ConfigurarConexion()
+        public void ConfigurarConexion(String ServerIp, int ServerPort, String LocalIp)
         {
-            //Datos de preuba
-            //puertoRemoto = 2000;
-            //ipRemota = "127.0.0.1";
-            ipLocal = "127.0.0.1";
-            //
             socketCliente = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            endPointLocal = new IPEndPoint(IPAddress.Parse(ipLocal), 0);
+            endPointLocal = new IPEndPoint(IPAddress.Parse(LocalIp), 0);
             socketCliente.Bind(endPointLocal);
-            endPointRemoto = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 20000);
+            endPointRemoto = new IPEndPoint(IPAddress.Parse(ServerIp), ServerPort);
             socketCliente.Connect(endPointRemoto);
         }
 
+        public void Menu()
+        {
+            Console.WriteLine("1. Conexión de un cliente al servidor");
+            Console.WriteLine("2. Dar de alta a un usuario");
+            Console.WriteLine("3. Crear perfil de trabajo de usuario");
+            Console.WriteLine("4. Asociar foto al perfil");
+            Console.WriteLine("5. Consultar perfiles existentes");
+            Console.WriteLine("6. Enviar y recibir mensajes");
+            Console.WriteLine("7. Fin de conexion");
+        }
+
+        public List<String> CargarHabilidades()
+        {
+
+            String habilidad;
+            List<String> habilidades = new List<string>();
+            do
+            {
+                Console.WriteLine("Ingrese una habilidad o (X) para salir");
+                habilidad = Console.ReadLine();
+                if (habilidad != "X" && habilidad != "x")
+                {
+                    habilidades.Add(habilidad);
+                }
+            } while (habilidad != "X" && habilidad != "x");
+            return habilidades;
+        }
+        
         public String Interfaz()
         {
             string opcion = "#";
             while (!opcion.Contains("7"))
             {
-
-                Console.WriteLine("1. Conexión de un cliente al servidor");
-                Console.WriteLine("2. Dar de alta a un usuario");
-                Console.WriteLine("3. Crear perfil de trabajo de usuario");
-                Console.WriteLine("4. Asociar foto al perfil");
-                Console.WriteLine("5. Consultar perfiles existentes");
-                Console.WriteLine("6. Enviar y recibir mensajes");
-                Console.WriteLine("7. Fin de conexion");
+                Menu();
                 opcion = Console.ReadLine();
                 switch (opcion)
                 {
@@ -70,9 +80,9 @@ namespace ClienT
                         Console.WriteLine("Conexión establecida");
                         break;
                     case "2":
-                        Console.WriteLine("Ingrese nombre de usuario");
+                        Console.WriteLine("Ingrese su nombre");
                         String username = Console.ReadLine();
-                        Console.WriteLine("Ingrese id de usuario");
+                        Console.WriteLine("Ingrese nombre de usuario");
                         String userID = Console.ReadLine();
                         Console.WriteLine("Ingrese contraseña");
                         String password = Console.ReadLine();
@@ -81,20 +91,8 @@ namespace ClienT
                     case "3":
                         Console.WriteLine("Crear su perfil de usuario");
                         Console.WriteLine("Ingrese descripcion de su perfil");
-
                         String descripcion = Console.ReadLine();
-
-                        String habilidad;
-                        List<String> habilidades = new List<string>();
-                        do
-                        {
-                            Console.WriteLine("Ingrese una habilidad o (X) para salir");
-                            habilidad = Console.ReadLine();
-                            if (habilidad != "X" && habilidad != "x")
-                            {
-                                habilidades.Add(habilidad);
-                            }
-                        } while (habilidad != "X" && habilidad != "x");
+                        List <String> habilidades= CargarHabilidades();
                         CrearPerfil(descripcion, habilidades);
                         break;
                     case "4":
@@ -104,7 +102,8 @@ namespace ClienT
                         break;
                     case "5":
                         Console.WriteLine("Consultar perfiles existentes");
-                        Console.WriteLine("1)Consultar por nombre \n2)Consultar por palabra clave \n3)Consultar por id");
+                        Console.WriteLine("1)Consultar por nombre \n2)Consultar por palabra clave" +
+                            " \n3)Consultar por id");
                         int buscarPor = Int32.Parse(Console.ReadLine());
                         switch (buscarPor)
                             
@@ -116,17 +115,7 @@ namespace ClienT
                                 BuscarPorNombre(nombre);
                                 break;
                             case 2:
-                                String habilidadABuscar;
-                                List<String> habilidadesABuscar = new List<string>();
-                                do
-                                {
-                                    Console.WriteLine("Ingrese una habilidad o (X) para salir");
-                                    habilidadABuscar = Console.ReadLine();
-                                    if (habilidadABuscar != "X" && habilidadABuscar != "x")
-                                    {
-                                        habilidadesABuscar.Add(habilidadABuscar);
-                                    }
-                                } while (habilidadABuscar != "X" && habilidadABuscar != "x");
+                                List<String> habilidadesABuscar = CargarHabilidades();
                                 Console.WriteLine("Perfiles:");
                                 BuscarPorHabilidades(habilidadesABuscar);
                                 break;
@@ -183,15 +172,10 @@ namespace ClienT
             StructuralMessage.envio("REQ", "02", largo, mensaje, manejoDataSocket);
 
             List<String> retorno = StructuralMessage.recibo(manejoDataSocket);
-            if(retorno[3] == Guid.Empty.ToString())
-            {
-                Console.WriteLine("El usuario ya existe");
-            }
-            else{
-                session = Guid.Parse(retorno[3]);
+            List<String> status = StructuralMessage.recibo(manejoDataSocket);
+            session = Guid.Parse(retorno[3]);
 
-                Console.WriteLine("Sesion iniciada");
-            }
+            Console.WriteLine(status[3]);
  
         }
 
@@ -226,6 +210,9 @@ namespace ClienT
 
         public void AsociarFoto(String ruta)
         {
+            String envio = session.ToString();
+            int largo = envio.Length;
+            StructuralMessage.envio("REQ", "04", largo, envio, manejoDataSocket);
             FileCommsHandler fileCommsHandler = new FileCommsHandler(socketCliente);
             fileCommsHandler.SendFile(ruta);
             Console.WriteLine("Imagen asociada con exito");

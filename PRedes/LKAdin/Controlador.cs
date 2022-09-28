@@ -16,24 +16,34 @@ namespace LKAdin
         List<Mensajeria> Mensajes { get; set; }
 
 
-        public Guid AltaUsuario(String userName, String password, String Id)
+        public (Guid,String) AltaUsuario(String nombre, String password, String userName)
         {
             Usuario usuario = new Usuario();
-            usuario.Name = userName;
-            usuario.Password = password;
-            usuario.UserId = Id;
-            usuario.guid = Guid.NewGuid();
-            bool found = false;
-            foreach(Usuario u in Usuarios)
+            try
             {
-                found = u.Equals(usuario);
+                usuario.Name = nombre;
+                usuario.Password = password;
+                usuario.UserName = userName;
+                usuario.guid = Guid.NewGuid();
+                bool found = false;
+                //Controlamos que no se registren dos usuarios con el mismo nombre, al mismo tiempo
+                lock (this)
+                {
+                    foreach (Usuario u in Usuarios)
+                    {
+                        found = u.Equals(usuario);
+                    }
+                    if (found)
+                    {
+                        return (Guid.Empty, "El usuario ya existe");
+                    }
+                    Usuarios.Add(usuario);
+                    return (usuario.guid, "Usuario registrado correctamente");
+                }
             }
-            if (found)
-            {
-                return Guid.Empty;
+            catch (ArgumentException e){
+                return (Guid.Empty, e.Message);
             }
-            Usuarios.Add(usuario);
-            return usuario.guid;
         }
 
         public void CrearPerfil(Usuario usuario, String descripcion, List<String> habilidades){
@@ -42,11 +52,14 @@ namespace LKAdin
             perfil.Habilidades = habilidades;
             if (!Perfiles.Contains(perfil))
             {
-                Perfiles.Add(perfil);
+                lock (this)
+                {
+                    Perfiles.Add(perfil);
+                }
             }
             else
             {
-                throw new Exception("El perfil ya existe");
+                throw new ArgumentException("El perfil ya existe");
             }
         }
 
@@ -55,10 +68,10 @@ namespace LKAdin
         public Usuario BuscarUsuarioId(String idUsuario)
         {
             Usuario usuario = new Usuario();
-            usuario.UserId = idUsuario;
+            usuario.UserName = idUsuario;
             for (int i = 0; i < Usuarios.Count; i++)
             {
-                if (Usuarios[i].UserId.Equals(usuario.UserId))
+                if (Usuarios[i].UserName.Equals(usuario.UserName))
                 {
                     return Usuarios[i];
                 }
@@ -73,7 +86,7 @@ namespace LKAdin
 
             for (int i = 0; i < Perfiles.Count; i++)
             {
-                if (Perfiles[i].UserId.Equals(idPerfil))
+                if (Perfiles[i].UserName.Equals(idPerfil))
                 {
                     retorno.Append(Perfiles[i].ToString());
                     retorno.Append("---------------------------");
@@ -101,17 +114,12 @@ namespace LKAdin
 
             for (int i = 0; i < Perfiles.Count; i++)
             {
-                if (Perfiles[i].UserId.Equals(idPerfil))
+                if (Perfiles[i].UserName.Equals(idPerfil))
                 {
                     return Perfiles[i];
                 }
             }
             return null;
-        }
-
-        public void AsociarFoto(Perfil perfil, String foto)
-        {
-            perfil.Imagen = new Bitmap(foto);
         }
 
         public String BuscarUsuarioNombre(String Nombre){
@@ -140,8 +148,8 @@ namespace LKAdin
                     return Usuarios[i];
                 }
             }
-            throw new Exception();
-            
+            throw new ArgumentException("No está autorizado a realizar esta operación");
+
         }
 
         public String BuscarPorHabilidad(String[] habilidades)
