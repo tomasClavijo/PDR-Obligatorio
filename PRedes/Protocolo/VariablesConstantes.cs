@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Protocol
+namespace Protocolo
 {
     public static class VariablesConstantes
     {
@@ -8,6 +8,11 @@ namespace Protocol
 
         public const int FixedFileSize = 8;
         public const int MaxPacketSize = 32768; //32KB
+
+        public const int Header = 3;
+        public const int Comand = 2;
+        public const int Length = 4;
+
 
         public static long CalculateFileParts(long fileSize)
         {

@@ -5,12 +5,12 @@ namespace ClienT
 {
     internal class Program
     {
-        static readonly SettingsManager settingsManager = new SettingsManager();
+        static readonly GestorConfig gestorConfig = new GestorConfig();
         static void Main(string[] args)
         {
-            string serverIp = settingsManager.ReadSettings(ConfigServidor.ServerIpConfig);
-            int serverPort = int.Parse(settingsManager.ReadSettings(ConfigServidor.ServerPortConfig));
-            string localIp = settingsManager.ReadSettings(ConfigServidor.LocalIpConfig);
+            string serverIp = gestorConfig.ReadSettings(ConfigServidor.ServerIpConfig);
+            int serverPort = int.Parse(gestorConfig.ReadSettings(ConfigServidor.ServerPortConfig));
+            string localIp = gestorConfig.ReadSettings(ConfigServidor.LocalIpConfig);
             Console.WriteLine("Inicia cliente");
             Cliente cliente = new Cliente(serverIp, serverPort, localIp);
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Protocolo
 {
-    public class ConversionHandler
+    public class ConvertorVariables
     {
         public byte[] ConvertStringToBytes(string value)
         {

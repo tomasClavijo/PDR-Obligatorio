@@ -5,7 +5,6 @@ using System.Net;
 using System.Text;
 using Protocolo;
 using System.Threading;
-using Communication;
 
 namespace ClienT
 {
@@ -169,14 +168,12 @@ namespace ClienT
             int largo = usernameS.Length + passwordS.Length + id.Length + 2;
             String mensaje = usernameS + "|" + passwordS + "|" + id;
 
-            StructuralMessage.envio("REQ", "02", largo, mensaje, manejoDataSocket);
+            EstructuraDeProtocolo.envio("REQ", "02", largo, mensaje, manejoDataSocket);
 
-            List<String> retorno = StructuralMessage.recibo(manejoDataSocket);
-            List<String> status = StructuralMessage.recibo(manejoDataSocket);
-            session = Guid.Parse(retorno[3]);
-
-            Console.WriteLine(status[3]);
- 
+            List<String> retorno = EstructuraDeProtocolo.recibo(manejoDataSocket);
+            String[] descomprimido = retorno[3].Split('|');
+            session = Guid.Parse(descomprimido[0]);
+            Console.WriteLine(retorno[1]);
         }
 
         public void CrearPerfil(String descripcion, List<String> habilidades)
@@ -202,9 +199,9 @@ namespace ClienT
 
             int largoHabilidades = skills.Length;
 
-            StructuralMessage.envio("REQ", "03", largoHabilidades, skills, manejoDataSocket);
-            List<String> respuesta = StructuralMessage.recibo(manejoDataSocket);
-            Console.WriteLine("Perfil creado exitosamente");
+            EstructuraDeProtocolo.envio("REQ", "03", largoHabilidades, skills, manejoDataSocket);
+            List<String> retorno = EstructuraDeProtocolo.recibo(manejoDataSocket);
+            Console.WriteLine(retorno[3]);
 
         }
 
@@ -212,18 +209,19 @@ namespace ClienT
         {
             String envio = session.ToString();
             int largo = envio.Length;
-            StructuralMessage.envio("REQ", "04", largo, envio, manejoDataSocket);
-            FileCommsHandler fileCommsHandler = new FileCommsHandler(socketCliente);
+            EstructuraDeProtocolo.envio("REQ", "04", largo, envio, manejoDataSocket);
+            GestorArchivos fileCommsHandler = new GestorArchivos(socketCliente);
             fileCommsHandler.SendFile(ruta);
-            Console.WriteLine("Imagen asociada con exito");
+            List<String> retorno = EstructuraDeProtocolo.recibo(manejoDataSocket);
+            Console.WriteLine(retorno[3]);
         }
 
 
         public void BuscarPorNombre(String nombre)
         {
             int largo = nombre.Length;
-            StructuralMessage.envio("REQ", "51", largo, nombre, manejoDataSocket);
-            List<String> respuesta = StructuralMessage.recibo(manejoDataSocket);
+            EstructuraDeProtocolo.envio("REQ", "51", largo, nombre, manejoDataSocket);
+            List<String> respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);
             Console.WriteLine(respuesta[3]);
         }
         public void BuscarPorHabilidades(List<String> habilidades)
@@ -244,16 +242,16 @@ namespace ClienT
 
             int largoHabilidades = skills.Length;
 
-            StructuralMessage.envio("REQ", "52", largoHabilidades, skills, manejoDataSocket);
-            List<String> respuesta = StructuralMessage.recibo(manejoDataSocket);
+            EstructuraDeProtocolo.envio("REQ", "52", largoHabilidades, skills, manejoDataSocket);
+            List<String> respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);
             Console.WriteLine(respuesta[3]);
         }
 
         public void BuscarPorId(String id)
         {
             int largo = id.Length;
-            StructuralMessage.envio("REQ", "53", largo, id, manejoDataSocket);
-            List<String> respuesta = StructuralMessage.recibo(manejoDataSocket);
+            EstructuraDeProtocolo.envio("REQ", "53", largo, id, manejoDataSocket);
+            List<String> respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);
             Console.WriteLine(respuesta[3]);
         }
 
@@ -261,8 +259,8 @@ namespace ClienT
         {
             String envio = userName + "|" + mensaje + "|" + session.ToString();
             int largo = envio.Length;
-            StructuralMessage.envio("REQ", "61", largo, envio, manejoDataSocket);
-            List<String> respuesta = StructuralMessage.recibo(manejoDataSocket);
+            EstructuraDeProtocolo.envio("REQ", "61", largo, envio, manejoDataSocket);
+            List<String> respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);
             Console.WriteLine(respuesta[3]);
         }
 
@@ -270,8 +268,8 @@ namespace ClienT
         {
             String envio = session.ToString();
             int largo = envio.Length;
-            StructuralMessage.envio("REQ", "62", largo, envio, manejoDataSocket);
-            List<String> respuesta = StructuralMessage.recibo(manejoDataSocket);
+            EstructuraDeProtocolo.envio("REQ", "62", largo, envio, manejoDataSocket);
+            List<String> respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);
             Console.WriteLine(respuesta[3]);
 
         }

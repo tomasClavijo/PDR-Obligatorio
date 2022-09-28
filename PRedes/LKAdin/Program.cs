@@ -6,11 +6,11 @@ namespace LKAdin
 {
     internal class Program
     {
-        static readonly SettingsManager settingsManager = new SettingsManager();
+        static readonly GestorConfig settingsManager = new GestorConfig();
         static void Main(string[] args)
         {
-            string serverIp = settingsManager.ReadSettings(ServerConfig.ServerIpConfig);
-            int serverPort = int.Parse(settingsManager.ReadSettings(ServerConfig.ServerPortConfig));
+            string serverIp = settingsManager.ReadSettings(ConfigServidor.ServerIpConfig);
+            int serverPort = int.Parse(settingsManager.ReadSettings(ConfigServidor.ServerPortConfig));
             Controlador controlador = new Controlador();
             Servidor servidor = new Servidor(controlador, serverIp, serverPort);
         }

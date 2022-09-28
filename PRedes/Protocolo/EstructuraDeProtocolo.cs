@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Protocolo
 {
-    public static class StructuralMessage
+    public static class EstructuraDeProtocolo
     {
         public static void envio(String tipo, String comando, int largo, String mensaje, ManejoDataSocket socket)
         {
@@ -26,11 +26,11 @@ namespace Protocolo
         public static List<String> recibo(ManejoDataSocket manejo)
         {
             List<String> retorno = new List<string>();
-            byte[] tiopoMensaje = manejo.Recive(3);
+            byte[] tiopoMensaje = manejo.Recive(VariablesConstantes.Header);
             String tipo = Encoding.UTF8.GetString(tiopoMensaje);
-            byte[] comandMensaje = manejo.Recive(2);
+            byte[] comandMensaje = manejo.Recive(VariablesConstantes.Comand);
             String comando = Encoding.UTF8.GetString(comandMensaje);
-            byte[] largoMensaje = manejo.Recive(4);
+            byte[] largoMensaje = manejo.Recive(VariablesConstantes.Length);
             int largo = BitConverter.ToInt32(largoMensaje);
             byte[] mensaje = manejo.Recive(largo);
             String mensajeString = Encoding.UTF8.GetString(mensaje);

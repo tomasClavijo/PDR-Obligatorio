@@ -1,5 +1,4 @@
-﻿using Communication;
-using Protocolo;
+﻿using Protocolo;
 using System;
 using System.Collections.Generic;
 using System.IO.IsolatedStorage;
@@ -58,7 +57,7 @@ namespace LKAdin
             {
                 try
                 {
-                    List<String> recibo = StructuralMessage.recibo(manejo);
+                    List<String> recibo = EstructuraDeProtocolo.recibo(manejo);
                     String tipo = recibo[0];
                     String comando = recibo[1];
                     String mensajeString = recibo[3];
@@ -67,10 +66,7 @@ namespace LKAdin
                     String nombre;
                     String password; 
                     String userName;
-                    int guidLargo = 36;
                     Guid guid;
-                    int statusLargo = 2;
-                    String status = "OK";
                     int respuestaLargo = 0;
                     String respuesta = String.Empty;
 
@@ -84,10 +80,8 @@ namespace LKAdin
                                 userName = mensajeDescomprimido[2];
                                 (Guid, String) resultado = control.AltaUsuario(nombre, password, userName);
                                 guid = resultado.Item1;
-                                respuestaLargo = guidLargo;
-                                respuesta = guid.ToString();
-                                status = resultado.Item2;
-                                statusLargo = status.Length;
+                                respuesta = guid.ToString()+"|"+ resultado.Item2;
+                                tipo = "RES";
 
                                 break;
                             case "03":
@@ -103,34 +97,44 @@ namespace LKAdin
                                 {
                                     Usuario usuario = control.BuscarUsuarioGuid(guid);
                                     control.CrearPerfil(usuario, descripcion, habilidades);
+                                    respuesta = "Perfil creado correctamente";
                                 }catch(ArgumentException e)
                                 {
-                                    status = e.Message;
-                                    statusLargo = status.Length;
+                                    respuesta = e.Message;
                                 }
+                                tipo = "STT";
                                 
                                 break;
                             case "04":
-                                FileCommsHandler fileCommsHandler = new FileCommsHandler(socketCliente);
-                                fileCommsHandler.ReceiveFile();
+                                try
+                                {
+                                    GestorArchivos gestor = new GestorArchivos(socketCliente);
+                                    gestor.ReceiveFile();
+                                    respuesta = "Imagen cargada correctamente";
+                                }catch(ArgumentException e)
+                                {
+                                    respuesta = e.Message;
+                                }
+                                tipo = "STT";
+                                
                                 break;
                             case "51":
                                 nombre = mensajeString;
                                 String perfiles = control.BuscarUsuarioNombre(nombre);
                                 int largoPerfiles = perfiles.Length;
-                                StructuralMessage.envio("RES", "51", largoPerfiles, perfiles, manejo);
+                                EstructuraDeProtocolo.envio("RES", "51", largoPerfiles, perfiles, manejo);
                                 break;
                             case "52":
 
                                 String perfilesHallados = control.BuscarPorHabilidad(mensajeDescomprimido);
                                 int largoPerfilesHallados = perfilesHallados.Length;
-                                StructuralMessage.envio("RES", "52", largoPerfilesHallados, perfilesHallados, manejo);
+                                EstructuraDeProtocolo.envio("RES", "52", largoPerfilesHallados, perfilesHallados, manejo);
                                 break;
                             case "53":
                                 String idP = mensajeString;
                                 String perfilesId = control.BuscarPerfilId(idP);
                                 int largoPerfilesId = perfilesId.Length;
-                                StructuralMessage.envio("RES", "51", largoPerfilesId, perfilesId, manejo);
+                                EstructuraDeProtocolo.envio("RES", "51", largoPerfilesId, perfilesId, manejo);
                                 break;
                             case "61":
                                 String nombreUsuario = mensajeDescomprimido[0];
@@ -139,17 +143,17 @@ namespace LKAdin
                                 Perfil perfilEmsior = control.BuscarPerfilGuid(Guid.Parse(mensajeDescomprimido[2]));
                                 control.EnviarMensaje(mensajeUsuario, perfilEmsior, perfilReceptor);
                                 respuesta = "Mensaje enviado";
-                                StructuralMessage.envio("RES", "61", respuesta.Length, respuesta, manejo);
+                                EstructuraDeProtocolo.envio("RES", "61", respuesta.Length, respuesta, manejo);
                                 break;
                             case "62":
                                 Perfil perfilRecepcion = control.BuscarPerfilGuid(Guid.Parse(mensajeString));
                                 String mensajes = control.MensajesRecibidos(perfilRecepcion);
-                                StructuralMessage.envio("RES", "52", mensajes.Length, mensajes, manejo);
+                                EstructuraDeProtocolo.envio("RES", "52", mensajes.Length, mensajes, manejo);
                                 break;
 
                         }
-                        StructuralMessage.envio("RES", comando, respuestaLargo, respuesta, manejo);
-                        StructuralMessage.envio("STT", comando, statusLargo, status, manejo);
+                        respuestaLargo = respuesta.Length;
+                        EstructuraDeProtocolo.envio(tipo, comando, respuestaLargo, respuesta, manejo);
                     }
                 }catch(SocketException e)
                 {

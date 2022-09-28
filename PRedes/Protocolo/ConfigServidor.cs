@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Protocolo
 {
-    public class ServerConfig
+    public class ConfigServidor
     {
         public static string ServerIpConfig = "ServerIpAddress";
         public static string ServerPortConfig = "ServerPort";

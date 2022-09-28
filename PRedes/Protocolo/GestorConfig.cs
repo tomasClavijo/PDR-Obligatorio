@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Protocolo
 {
-    public class SettingsManager
+    public class GestorConfig
     {
         public string ReadSettings(string key)
         {

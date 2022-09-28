@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Protocolo
 {
-    public class FileHandler
+    public class PropiedadesArchivo
     {
         public bool FileExists(string path)
         {

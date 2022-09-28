@@ -1,14 +1,14 @@
 ﻿using System;
 using System.IO;
 
-namespace Communication
+namespace Protocolo
 {
-    public class FileStreamHandler
+    public class TratamientoArchivo
     {
-        private readonly FileHandler _fileHandler;
-        public FileStreamHandler()
+        private readonly PropiedadesArchivo _fileHandler;
+        public TratamientoArchivo()
         {
-            _fileHandler = new FileHandler();
+            _fileHandler = new PropiedadesArchivo();
         }
         public byte[] Read(string path, long offset, int length)
         {
