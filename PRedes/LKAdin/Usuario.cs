@@ -33,7 +33,7 @@ namespace LKAdin
             get { return _name; }
             set
             {
-                if (!string.IsNullOrEmpty(value) && Regex.IsMatch(value, @"^[A-Za-z]*$"))
+                if (!string.IsNullOrEmpty(value) && Regex.IsMatch(value, @"^[A-Za-z ]*$"))
                 {
                     _name = value;
                 }
