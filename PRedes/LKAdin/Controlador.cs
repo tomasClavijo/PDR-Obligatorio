@@ -5,6 +5,7 @@ using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LKAdin
@@ -15,6 +16,17 @@ namespace LKAdin
         List<Perfil> Perfiles { get; set; }
         List<Mensajeria> Mensajes { get; set; }
 
+        int clientesLeyendoU = 0;
+        int clientesLeyendoP = 0;
+        int clientesLeyendoM = 0;
+
+        Semaphore escribirU = new Semaphore(0, 1);
+        Semaphore mutexU = new Semaphore(0, 1);
+        Semaphore escribirP = new Semaphore(0, 1);
+        Semaphore mutexP = new Semaphore(0, 1);
+        Semaphore escribirM = new Semaphore(0, 1);
+        Semaphore mutexM = new Semaphore(0, 1);
+        
 
         public (Guid,String) AltaUsuario(String nombre, String password, String userName)
         {
@@ -32,6 +44,9 @@ namespace LKAdin
                     foreach (Usuario u in Usuarios)
                     {
                         found = u.Equals(usuario);
+                        
+                        if(found)
+                            break;
                     }
                     if (found)
                     {
@@ -106,7 +121,7 @@ namespace LKAdin
                     return Perfiles[i];
                 }
             }
-            return null;
+            throw new ArgumentException("Usted no tiene perfil, para realizar esta operacion");
         }
 
         public Perfil BuscarPerfilUserId(String idPerfil)
@@ -119,7 +134,7 @@ namespace LKAdin
                     return Perfiles[i];
                 }
             }
-            return null;
+            throw new ArgumentException("El perfil no existe");
         }
 
         public String BuscarUsuarioNombre(String Nombre){
@@ -148,7 +163,7 @@ namespace LKAdin
                     return Usuarios[i];
                 }
             }
-            throw new ArgumentException("No está autorizado a realizar esta operación");
+            throw new ArgumentException("No está autorizado a realizar esta operacion");
 
         }
 

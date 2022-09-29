@@ -60,7 +60,7 @@ namespace ClienT
                 {
                     habilidades.Add(habilidad);
                 }
-            } while (habilidad != "X" && habilidad != "x");
+            } while ((habilidad != "X" && habilidad != "x") || habilidades.Count == 0);
             return habilidades;
         }
         
@@ -171,9 +171,9 @@ namespace ClienT
             EstructuraDeProtocolo.envio("REQ", "02", largo, mensaje, manejoDataSocket);
 
             List<String> retorno = EstructuraDeProtocolo.recibo(manejoDataSocket);
-            String[] descomprimido = retorno[3].Split('|');
-            session = Guid.Parse(descomprimido[0]);
-            Console.WriteLine(retorno[1]);
+
+            session = Guid.Parse(retorno[3]);
+            Console.WriteLine(retorno[4]);
         }
 
         public void CrearPerfil(String descripcion, List<String> habilidades)
@@ -211,9 +211,18 @@ namespace ClienT
             int largo = envio.Length;
             EstructuraDeProtocolo.envio("REQ", "04", largo, envio, manejoDataSocket);
             GestorArchivos fileCommsHandler = new GestorArchivos(socketCliente);
-            fileCommsHandler.SendFile(ruta);
-            List<String> retorno = EstructuraDeProtocolo.recibo(manejoDataSocket);
-            Console.WriteLine(retorno[3]);
+            try
+            {
+                fileCommsHandler.SendFile(ruta);
+                List<String> retorno = EstructuraDeProtocolo.recibo(manejoDataSocket);
+                Console.WriteLine(retorno[3]);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Imagen invalida");
+            }
+
+
         }
 
 

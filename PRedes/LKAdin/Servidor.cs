@@ -20,6 +20,7 @@ namespace LKAdin
         String ip;
         Controlador controlador;
 
+
         public Servidor(Controlador controlador, string ip, int puerto)
         {
             this.ip = ip;
@@ -61,6 +62,11 @@ namespace LKAdin
                     String tipo = recibo[0];
                     String comando = recibo[1];
                     String mensajeString = recibo[3];
+                    for (int i = 4; i < recibo.Count; i++)
+                    {
+                        mensajeString += "|"+recibo[i];
+                    }
+                    
                     var mensajeDescomprimido = mensajeString.Split("|");
                     
                     String nombre;
@@ -75,26 +81,34 @@ namespace LKAdin
                         switch (comando)
                         {
                             case "02":
-                                nombre = mensajeDescomprimido[0];
-                                password = mensajeDescomprimido[1];
-                                userName = mensajeDescomprimido[2];
-                                (Guid, String) resultado = control.AltaUsuario(nombre, password, userName);
-                                guid = resultado.Item1;
-                                respuesta = guid.ToString()+"|"+ resultado.Item2;
+                                try
+                                {
+                                    nombre = mensajeDescomprimido[0];
+                                    password = mensajeDescomprimido[1];
+                                    userName = mensajeDescomprimido[2];
+                                    (Guid, String) resultado = control.AltaUsuario(nombre, password, userName);
+                                    guid = resultado.Item1;
+                                    respuesta = guid.ToString() + "|" + resultado.Item2;
+                                }
+                                catch (IndexOutOfRangeException)
+                                {
+                                    respuesta = Guid.Empty.ToString() + "|" + "Faltaron datos";
+                                }
+                                
                                 tipo = "RES";
 
                                 break;
                             case "03":
-                                String descripcion = mensajeDescomprimido[0];
-                                guid = Guid.Parse(mensajeDescomprimido[1]);
-
-                                List<String> habilidades = new List<string>();
-                                for (int i = 2; i < mensajeDescomprimido.Length; i++)
-                                {
-                                    habilidades.Add(mensajeDescomprimido[i]);
-                                }
                                 try
                                 {
+                                    String descripcion = mensajeDescomprimido[0];
+                                    guid = Guid.Parse(mensajeDescomprimido[1]);
+
+                                    List<String> habilidades = new List<string>();
+                                    for (int i = 2; i < mensajeDescomprimido.Length; i++)
+                                    {
+                                        habilidades.Add(mensajeDescomprimido[i]);
+                                    }
                                     Usuario usuario = control.BuscarUsuarioGuid(guid);
                                     control.CrearPerfil(usuario, descripcion, habilidades);
                                     respuesta = "Perfil creado correctamente";
@@ -102,16 +116,25 @@ namespace LKAdin
                                 {
                                     respuesta = e.Message;
                                 }
+                                catch (IndexOutOfRangeException)
+                                {
+                                    respuesta = "Faltaron datos";
+                                }
                                 tipo = "STT";
                                 
                                 break;
                             case "04":
+                                
                                 try
                                 {
                                     GestorArchivos gestor = new GestorArchivos(socketCliente);
                                     gestor.ReceiveFile();
                                     respuesta = "Imagen cargada correctamente";
                                 }catch(ArgumentException e)
+                                {
+                                    respuesta = e.Message;
+                                }
+                                catch (Exception e)
                                 {
                                     respuesta = e.Message;
                                 }
@@ -122,33 +145,49 @@ namespace LKAdin
                                 nombre = mensajeString;
                                 String perfiles = control.BuscarUsuarioNombre(nombre);
                                 int largoPerfiles = perfiles.Length;
-                                EstructuraDeProtocolo.envio("RES", "51", largoPerfiles, perfiles, manejo);
+                                tipo = "RES";
                                 break;
                             case "52":
-
                                 String perfilesHallados = control.BuscarPorHabilidad(mensajeDescomprimido);
                                 int largoPerfilesHallados = perfilesHallados.Length;
-                                EstructuraDeProtocolo.envio("RES", "52", largoPerfilesHallados, perfilesHallados, manejo);
+                                tipo = "RES";
                                 break;
+                                
                             case "53":
                                 String idP = mensajeString;
                                 String perfilesId = control.BuscarPerfilId(idP);
                                 int largoPerfilesId = perfilesId.Length;
-                                EstructuraDeProtocolo.envio("RES", "51", largoPerfilesId, perfilesId, manejo);
+                                tipo = "RES";
                                 break;
                             case "61":
-                                String nombreUsuario = mensajeDescomprimido[0];
-                                Perfil perfilReceptor = control.BuscarPerfilUserId(nombreUsuario);
-                                String mensajeUsuario = mensajeDescomprimido[1];
-                                Perfil perfilEmsior = control.BuscarPerfilGuid(Guid.Parse(mensajeDescomprimido[2]));
-                                control.EnviarMensaje(mensajeUsuario, perfilEmsior, perfilReceptor);
-                                respuesta = "Mensaje enviado";
-                                EstructuraDeProtocolo.envio("RES", "61", respuesta.Length, respuesta, manejo);
+                                try
+                                {
+                                    String nombreUsuario = mensajeDescomprimido[0];
+                                    Perfil perfilReceptor = control.BuscarPerfilUserId(nombreUsuario);
+                                    String mensajeUsuario = mensajeDescomprimido[1];
+                                    Perfil perfilEmsior = control.BuscarPerfilGuid(Guid.Parse(mensajeDescomprimido[2]));
+                                    control.EnviarMensaje(mensajeUsuario, perfilEmsior, perfilReceptor);
+                                    respuesta = "Mensaje enviado";
+                                }
+                                catch (ArgumentException e)
+                                {
+                                    respuesta = e.Message;
+                                }
+
+                                tipo = "STT";
                                 break;
                             case "62":
-                                Perfil perfilRecepcion = control.BuscarPerfilGuid(Guid.Parse(mensajeString));
-                                String mensajes = control.MensajesRecibidos(perfilRecepcion);
-                                EstructuraDeProtocolo.envio("RES", "52", mensajes.Length, mensajes, manejo);
+                                try
+                                {
+                                    Perfil perfilRecepcion = control.BuscarPerfilGuid(Guid.Parse(mensajeString));
+                                    respuesta = control.MensajesRecibidos(perfilRecepcion);
+                                }
+                                catch(ArgumentException e)
+                                {
+                                    respuesta = e.Message;
+                                }
+                                
+                                tipo = "RES";
                                 break;
 
                         }
@@ -159,10 +198,14 @@ namespace LKAdin
                 {
                     clienteConectado = false;
                 }
+                catch (Exception)
+                {
+                    clienteConectado = false;
+                }
             }
             Console.WriteLine("Cliente desconectado");
         }
-
+        
 
     }
 }
