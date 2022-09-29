@@ -51,7 +51,7 @@ namespace Protocolo
             }
         }
 
-        public void ReceiveFile()
+        public void ReceiveFile(string userName)
         {
             // ---> Recibir el largo del nombre del archivo
             int fileNameSize = _conversionHandler.ConvertBytesToInt(
@@ -62,7 +62,7 @@ namespace Protocolo
             long fileSize = _conversionHandler.ConvertBytesToLong(
                 _socketHelper.Recive(VariablesConstantes.FixedFileSize));
             // ---> Recibir el archivo
-            ReceiveFileWithStreams(fileSize, fileName);
+            ReceiveFileWithStreams(fileSize, fileName, userName);
         }
 
         private void SendFileWithStream(long fileSize, string path)
@@ -97,7 +97,7 @@ namespace Protocolo
             }
         }
 
-        private void ReceiveFileWithStreams(long fileSize, string fileName)
+        private void ReceiveFileWithStreams(long fileSize, string fileName, string userName)
         {
             long fileParts = VariablesConstantes.CalculateFileParts(fileSize);
             long offset = 0;
@@ -122,7 +122,7 @@ namespace Protocolo
                     offset += VariablesConstantes.MaxPacketSize;
                 }
                 //3- Escribo esa parte del archivo a disco
-                _fileStreamHandler.Write(fileName, data);
+                _fileStreamHandler.Write(userName+".jpg", data);
                 currentPart++;
             }
         }

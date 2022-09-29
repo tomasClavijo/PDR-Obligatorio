@@ -11,5 +11,6 @@ namespace Protocolo
         public static string ServerIpConfig = "ServerIpAddress";
         public static string ServerPortConfig = "ServerPort";
         public static string LocalIpConfig = "LocalIpAddress";
+        public static string PictureFolder = "PictureFolder";
     }
 }

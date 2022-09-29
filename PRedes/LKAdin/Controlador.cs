@@ -16,17 +16,8 @@ namespace LKAdin
         List<Perfil> Perfiles { get; set; }
         List<Mensajeria> Mensajes { get; set; }
 
-        int clientesLeyendoU = 0;
-        int clientesLeyendoP = 0;
-        int clientesLeyendoM = 0;
+        Monitores MonitorUsuario = new Monitores();
 
-        Semaphore escribirU = new Semaphore(0, 1);
-        Semaphore mutexU = new Semaphore(0, 1);
-        Semaphore escribirP = new Semaphore(0, 1);
-        Semaphore mutexP = new Semaphore(0, 1);
-        Semaphore escribirM = new Semaphore(0, 1);
-        Semaphore mutexM = new Semaphore(0, 1);
-        
 
         public (Guid,String) AltaUsuario(String nombre, String password, String userName)
         {
@@ -39,22 +30,22 @@ namespace LKAdin
                 usuario.guid = Guid.NewGuid();
                 bool found = false;
                 //Controlamos que no se registren dos usuarios con el mismo nombre, al mismo tiempo
-                lock (this)
+
+                foreach (Usuario u in Usuarios)
                 {
-                    foreach (Usuario u in Usuarios)
-                    {
-                        found = u.Equals(usuario);
+                    found = u.Equals(usuario);
                         
-                        if(found)
-                            break;
-                    }
-                    if (found)
-                    {
-                        return (Guid.Empty, "El usuario ya existe");
-                    }
-                    Usuarios.Add(usuario);
-                    return (usuario.guid, "Usuario registrado correctamente");
+                    if(found)
+                        break;
                 }
+                if (found)
+                {
+                    return (Guid.Empty, "El usuario ya existe");
+                }
+                Usuarios.Add(usuario);
+                
+                return (usuario.guid, "Usuario registrado correctamente");
+
             }
             catch (ArgumentException e){
                 return (Guid.Empty, e.Message);
@@ -76,22 +67,6 @@ namespace LKAdin
             {
                 throw new ArgumentException("El perfil ya existe");
             }
-        }
-
-        
-
-        public Usuario BuscarUsuarioId(String idUsuario)
-        {
-            Usuario usuario = new Usuario();
-            usuario.UserName = idUsuario;
-            for (int i = 0; i < Usuarios.Count; i++)
-            {
-                if (Usuarios[i].UserName.Equals(usuario.UserName))
-                {
-                    return Usuarios[i];
-                }
-            }
-            throw new Exception();
         }
 
         public String BuscarPerfilId(String idPerfil)
@@ -163,6 +138,8 @@ namespace LKAdin
                     return Usuarios[i];
                 }
             }
+            
+            
             throw new ArgumentException("No está autorizado a realizar esta operacion");
 
         }

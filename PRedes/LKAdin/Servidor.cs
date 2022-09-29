@@ -127,8 +127,10 @@ namespace LKAdin
                                 
                                 try
                                 {
+                                    guid = Guid.Parse(mensajeDescomprimido[0]);
+                                    Usuario usuario = control.BuscarUsuarioGuid(guid);
                                     GestorArchivos gestor = new GestorArchivos(socketCliente);
-                                    gestor.ReceiveFile();
+                                    gestor.ReceiveFile(usuario.UserName);
                                     respuesta = "Imagen cargada correctamente";
                                 }catch(ArgumentException e)
                                 {
@@ -143,20 +145,26 @@ namespace LKAdin
                                 break;
                             case "51":
                                 nombre = mensajeString;
-                                String perfiles = control.BuscarUsuarioNombre(nombre);
-                                int largoPerfiles = perfiles.Length;
+                                respuesta = control.BuscarUsuarioNombre(nombre);
                                 tipo = "RES";
                                 break;
                             case "52":
-                                String perfilesHallados = control.BuscarPorHabilidad(mensajeDescomprimido);
-                                int largoPerfilesHallados = perfilesHallados.Length;
+                                respuesta = control.BuscarPorHabilidad(mensajeDescomprimido);
                                 tipo = "RES";
                                 break;
                                 
                             case "53":
                                 String idP = mensajeString;
-                                String perfilesId = control.BuscarPerfilId(idP);
-                                int largoPerfilesId = perfilesId.Length;
+                                try
+                                {
+                                    Perfil perfiABuscar = control.BuscarPerfilUserId(idP);
+                                    String perfilesId = control.BuscarPerfilId(idP);
+                                    respuesta = perfilesId;
+                                }catch(ArgumentException e)
+                                {
+                                    respuesta = e.Message;
+                                }
+
                                 tipo = "RES";
                                 break;
                             case "61":

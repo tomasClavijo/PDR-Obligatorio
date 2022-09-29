@@ -81,7 +81,7 @@ namespace ClienT
                     case "2":
                         Console.WriteLine("Ingrese su nombre");
                         String username = Console.ReadLine();
-                        Console.WriteLine("Ingrese nombre de usuario");
+                        Console.WriteLine("Ingrese su username");
                         String userID = Console.ReadLine();
                         Console.WriteLine("Ingrese contraseña");
                         String password = Console.ReadLine();
@@ -102,7 +102,7 @@ namespace ClienT
                     case "5":
                         Console.WriteLine("Consultar perfiles existentes");
                         Console.WriteLine("1)Consultar por nombre \n2)Consultar por palabra clave" +
-                            " \n3)Consultar por id");
+                            " \n3)Consultar por username");
                         int buscarPor = Int32.Parse(Console.ReadLine());
                         switch (buscarPor)
                             
@@ -119,7 +119,7 @@ namespace ClienT
                                 BuscarPorHabilidades(habilidadesABuscar);
                                 break;
                             case 3:
-                                Console.WriteLine("Introduzca el id a buscar");
+                                Console.WriteLine("Introduzca el username a buscar");
                                 String id = Console.ReadLine();
                                 Console.WriteLine("Perfiles:");
                                 BuscarPorId(id);
@@ -136,7 +136,7 @@ namespace ClienT
                         switch (opcionMensaje)
                         {
                             case 1:
-                                Console.WriteLine("Introduzca nombre del usuario");
+                                Console.WriteLine("Introduzca username del receptor");
                                 String nombre = Console.ReadLine();
                                 Console.WriteLine("Introduzca mensaje");
                                 String mensaje = Console.ReadLine();
