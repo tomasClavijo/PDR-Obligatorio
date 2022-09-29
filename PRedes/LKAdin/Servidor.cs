@@ -29,16 +29,28 @@ namespace LKAdin
             this.puerto = puerto;
             this.controlador = controlador;
             this.rutaFotos = pictureFolder;
-            Configurar();
-            RecibirClientes();
+            try
+            {
+                Configurar();
+                RecibirClientes();
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("Ya hay un servidor corriendo en este socket\nPresione cualquier tecla para salir");
+                Console.ReadLine();
+            }
+
         }
 
         public void Configurar()
         {
+
+
             socketServidor = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             endPointServidor = new IPEndPoint(IPAddress.Parse(ip), puerto);
             socketServidor.Bind(endPointServidor);
             socketServidor.Listen(maximoEnBuffer);
+
         }
 
         public void RecibirClientes()
@@ -53,7 +65,7 @@ namespace LKAdin
                 t1.Start();
             }
         }
-        
+
         static void ManejarCliente(Socket socketCliente, ManejoDataSocket manejo, Controlador control, String rutaImagenes)
         {
             bool clienteConectado = true;
@@ -67,13 +79,13 @@ namespace LKAdin
                     String mensajeString = recibo[3];
                     for (int i = 4; i < recibo.Count; i++)
                     {
-                        mensajeString += "|"+recibo[i];
+                        mensajeString += "|" + recibo[i];
                     }
-                    
+
                     var mensajeDescomprimido = mensajeString.Split("|");
-                    
+
                     String nombre;
-                    String password; 
+                    String password;
                     String userName;
                     Guid guid;
                     int respuestaLargo = 0;
@@ -101,7 +113,7 @@ namespace LKAdin
                                 {
                                     respuesta = Guid.Empty.ToString() + "|" + "El usuario ya existe";
                                 }
-                                
+
                                 tipo = "RES";
 
                                 break;
@@ -119,7 +131,8 @@ namespace LKAdin
                                     Usuario usuario = control.BuscarUsuarioGuid(guid);
                                     control.CrearPerfil(usuario, descripcion, habilidades);
                                     respuesta = "Perfil creado correctamente";
-                                }catch(ArgumentException e)
+                                }
+                                catch (ArgumentException e)
                                 {
                                     respuesta = e.Message;
                                 }
@@ -128,18 +141,19 @@ namespace LKAdin
                                     respuesta = "Faltaron datos";
                                 }
                                 tipo = "STT";
-                                
+
                                 break;
                             case "04":
-                                
+
                                 try
                                 {
                                     guid = Guid.Parse(mensajeDescomprimido[0]);
                                     Usuario usuario = control.BuscarUsuarioGuid(guid);
                                     GestorArchivos gestor = new GestorArchivos(socketCliente);
-                                    gestor.ReceiveFile(rutaImagenes+"\\"+usuario.UserName);
+                                    gestor.ReceiveFile(rutaImagenes + "\\" + usuario.UserName);
                                     respuesta = "Imagen cargada correctamente";
-                                }catch(ArgumentException e)
+                                }
+                                catch (ArgumentException e)
                                 {
                                     respuesta = e.Message;
                                 }
@@ -148,7 +162,7 @@ namespace LKAdin
                                     respuesta = e.Message;
                                 }
                                 tipo = "STT";
-                                
+
                                 break;
                             case "51":
                                 nombre = mensajeString;
@@ -159,7 +173,7 @@ namespace LKAdin
                                 respuesta = control.BuscarPorHabilidad(mensajeDescomprimido);
                                 tipo = "RES";
                                 break;
-                                
+
                             case "53":
                                 String idP = mensajeString;
                                 try
@@ -169,11 +183,16 @@ namespace LKAdin
                                     PropiedadesArchivo pA = new PropiedadesArchivo();
                                     String rutaPerfilFoto = rutaImagenes + "\\" + perfiABuscar.Name + ".jpg";
                                     bool tieneFoto = pA.FileExists(rutaPerfilFoto);
-                                    respuesta = perfilesId+"|"+tieneFoto.ToString();
-                                    
-                                }catch(ArgumentException e)
+                                    respuesta = perfilesId + "|" + tieneFoto.ToString();
+
+                                }
+                                catch (ArgumentOutOfRangeException)
                                 {
-                                    respuesta = e.Message;
+                                    respuesta = "No se encontraron perfiles|False";
+                                }
+                                catch (ArgumentException e)
+                                {
+                                    respuesta = e.Message+"|False";
                                 }
 
                                 tipo = "RES";
@@ -213,7 +232,7 @@ namespace LKAdin
                             case "62":
                                 try
                                 {
-                                    
+
                                     Perfil perfilRecepcion = control.BuscarPerfilGuid(Guid.Parse(mensajeDescomprimido[0]));
                                     if (mensajeDescomprimido[1] == "1")
                                     {
@@ -224,11 +243,11 @@ namespace LKAdin
                                         respuesta = control.MensajesRecibidos(perfilRecepcion, false);
                                     }
                                 }
-                                catch(ArgumentException e)
+                                catch (ArgumentException e)
                                 {
                                     respuesta = e.Message;
                                 }
-                                
+
                                 tipo = "RES";
                                 break;
 
@@ -236,7 +255,8 @@ namespace LKAdin
                         respuestaLargo = respuesta.Length;
                         EstructuraDeProtocolo.envio(tipo, comando, respuestaLargo, respuesta, manejo);
                     }
-                }catch(SocketException e)
+                }
+                catch (SocketException e)
                 {
                     clienteConectado = false;
                 }
@@ -247,7 +267,7 @@ namespace LKAdin
             }
             Console.WriteLine("Cliente desconectado");
         }
-        
+
 
     }
 }

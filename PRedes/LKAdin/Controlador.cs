@@ -212,18 +212,13 @@ namespace LKAdin
                 for (int i = 0; i < Mensajes.Count; i++)
                 {
                     Mensajeria mensaje = Mensajes[i];
-                    if (mensaje.Receptor.Equals(receptor) && !mensaje.Leido)
+                    if (mensaje.Receptor.Equals(receptor) && ((!mensaje.Leido && sinLeer) || (mensaje.Leido && !sinLeer)))
                     {
-                        if (!mensaje.Leido && sinLeer)
+                        if (!mensaje.Leido)
                         {
-                            mensajesRecibidos.Append(mensaje.ToString());
                             mensaje.Leido = true;
                         }
-                        else
-                        {
-                            mensajesRecibidos.Append(mensaje.ToString());
-
-                        }
+                        mensajesRecibidos.Append(mensaje.ToString());
                     }
                 }
             }

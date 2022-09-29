@@ -21,11 +21,20 @@ namespace ClienT
 
         public Cliente(String ServerIp, int ServerPort, String LocalIp, String rutaImagenes)
         {
-            ConfigurarConexion(ServerIp, ServerPort, LocalIp);
-            manejoDataSocket = new ManejoDataSocket(socketCliente);
-            rutaImagen = rutaImagenes;
-            Interfaz();
-            CerrarConexion();
+            try
+            {
+                ConfigurarConexion(ServerIp, ServerPort, LocalIp);
+                manejoDataSocket = new ManejoDataSocket(socketCliente);
+                rutaImagen = rutaImagenes;
+                Interfaz();
+                CerrarConexion();
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("El cliente no pudo conectarse al servidor\nPresione cualquier tecla para salir");
+                Console.ReadLine();
+            }
+
         }
 
         public void ConfigurarConexion(String ServerIp, int ServerPort, String LocalIp)
@@ -148,7 +157,7 @@ namespace ClienT
                                     break;
                                 case 2:
                                     int opcionRecibir = 0;
-                                    while (opcionRecibir != 1 || opcionRecibir != 2)
+                                    while (opcionRecibir != 1 && opcionRecibir != 2)
                                     {
                                         Console.WriteLine("1)Mostrar nuevos mensajes \n2)Mostrar mensajes anteriores");
                                         opcionRecibir = int.Parse(Console.ReadLine());
