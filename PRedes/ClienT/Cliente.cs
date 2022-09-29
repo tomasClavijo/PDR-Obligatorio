@@ -16,13 +16,13 @@ namespace ClienT
         EndPoint endPointRemoto;
         Guid session;
         ManejoDataSocket manejoDataSocket;
-        
+        String rutaImagen;
 
-        public Cliente(String ServerIp, int ServerPort, String LocalIp)
+        public Cliente(String ServerIp, int ServerPort, String LocalIp, String rutaImagenes)
         {
             ConfigurarConexion(ServerIp, ServerPort, LocalIp);
             manejoDataSocket = new ManejoDataSocket(socketCliente);
-            
+            rutaImagen = rutaImagenes;
             Interfaz();
             CerrarConexion();
         }
@@ -143,7 +143,14 @@ namespace ClienT
                                 EnviarMensaje(nombre, mensaje);
                                 break;
                             case 2:
-                                RecibirMensajes();
+                                int opcionRecibir = 0;
+                                while(opcionRecibir != 1 || opcionRecibir != 2)
+                                {
+                                    Console.WriteLine("1)Mostrar nuevos mensajes \n2)Mostrar mensajes anteriores");
+                                    opcionRecibir = int.Parse(Console.ReadLine());
+                                }
+                                
+                                RecibirMensajes(opcionRecibir);
                                 break;
                             default:
                                 Console.WriteLine("Opcion incorrecta");
@@ -262,6 +269,20 @@ namespace ClienT
             EstructuraDeProtocolo.envio("REQ", "53", largo, id, manejoDataSocket);
             List<String> respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);
             Console.WriteLine(respuesta[3]);
+            if (respuesta[4] == "True")
+            {
+                Console.WriteLine("Desea descargar imagen del perfil?(S/_)");
+                if (Console.ReadLine() == "S")
+                {
+                    String envio = id + "|" + rutaImagen;
+                    largo = envio.Length;
+                    EstructuraDeProtocolo.envio("REQ", "54", largo, envio, manejoDataSocket);
+                    GestorArchivos fileCommsHandler = new GestorArchivos(socketCliente);
+                    fileCommsHandler.ReceiveFile(rutaImagen+"\\"+id);
+                    respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);
+                    Console.WriteLine(respuesta[3]);
+                }
+            }
         }
 
         public void EnviarMensaje(String userName, String mensaje)
@@ -273,9 +294,9 @@ namespace ClienT
             Console.WriteLine(respuesta[3]);
         }
 
-        public void RecibirMensajes()
+        public void RecibirMensajes(int opcion)
         {
-            String envio = session.ToString();
+            String envio = session.ToString()+"|"+opcion;
             int largo = envio.Length;
             EstructuraDeProtocolo.envio("REQ", "62", largo, envio, manejoDataSocket);
             List<String> respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);

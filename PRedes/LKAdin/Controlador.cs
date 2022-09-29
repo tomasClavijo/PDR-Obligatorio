@@ -16,56 +16,52 @@ namespace LKAdin
         List<Perfil> Perfiles { get; set; }
         List<Mensajeria> Mensajes { get; set; }
 
-        Monitores MonitorUsuario = new Monitores();
 
-
-        public (Guid,String) AltaUsuario(String nombre, String password, String userName)
+        public Guid AltaUsuario(String nombre, String password, String userName)
         {
             Usuario usuario = new Usuario();
-            try
-            {
-                usuario.Name = nombre;
-                usuario.Password = password;
-                usuario.UserName = userName;
-                usuario.guid = Guid.NewGuid();
-                bool found = false;
-                //Controlamos que no se registren dos usuarios con el mismo nombre, al mismo tiempo
+            usuario.Name = nombre;
+            usuario.Password = password;
+            usuario.UserName = userName;
+            usuario.guid = Guid.NewGuid();
 
+            bool found = false;
+
+            lock (Usuarios)
+            {
                 foreach (Usuario u in Usuarios)
                 {
                     found = u.Equals(usuario);
-                        
-                    if(found)
+
+                    if (found)
                         break;
                 }
                 if (found)
                 {
-                    return (Guid.Empty, "El usuario ya existe");
+                    throw new ArgumentException("El usuario ya existe");
                 }
                 Usuarios.Add(usuario);
-                
-                return (usuario.guid, "Usuario registrado correctamente");
+            }
+            return usuario.guid;
 
-            }
-            catch (ArgumentException e){
-                return (Guid.Empty, e.Message);
-            }
         }
 
-        public void CrearPerfil(Usuario usuario, String descripcion, List<String> habilidades){
+        public void CrearPerfil(Usuario usuario, String descripcion, List<String> habilidades)
+        {
             Perfil perfil = new Perfil(usuario);
             perfil.Descripcion = descripcion;
             perfil.Habilidades = habilidades;
-            if (!Perfiles.Contains(perfil))
+            lock (Perfiles)
             {
-                lock (this)
+                bool yaExiste = Perfiles.Contains(perfil);
+                if (!yaExiste)
                 {
                     Perfiles.Add(perfil);
                 }
-            }
-            else
-            {
-                throw new ArgumentException("El perfil ya existe");
+                else
+                {
+                    throw new ArgumentException("El perfil ya existe");
+                }
             }
         }
 
@@ -73,73 +69,103 @@ namespace LKAdin
         {
 
             StringBuilder retorno = new StringBuilder();
-
-            for (int i = 0; i < Perfiles.Count; i++)
+            lock (Perfiles)
             {
-                if (Perfiles[i].UserName.Equals(idPerfil))
+                for (int i = 0; i < Perfiles.Count; i++)
                 {
-                    retorno.Append(Perfiles[i].ToString());
-                    retorno.Append("---------------------------");
+                    if (Perfiles[i].UserName.Equals(idPerfil))
+                    {
+                        retorno.Append(Perfiles[i].ToString());
+                        retorno.Append("---------------------------");
+                    }
                 }
             }
+
             return retorno.ToString();
         }
 
         public Perfil BuscarPerfilGuid(Guid guidPerfil)
         {
-
-
-            for (int i = 0; i < Perfiles.Count; i++)
+            Perfil retorno = null;
+            lock (Perfiles)
             {
-                if (Perfiles[i].guid.Equals(guidPerfil))
+                for (int i = 0; i < Perfiles.Count; i++)
                 {
-                    return Perfiles[i];
+                    if (Perfiles[i].guid.Equals(guidPerfil))
+                    {
+                        retorno = Perfiles[i];
+                        break;
+                    }
                 }
+            }
+
+            if (retorno is not null)
+            {
+                return retorno;
             }
             throw new ArgumentException("Usted no tiene perfil, para realizar esta operacion");
         }
 
         public Perfil BuscarPerfilUserId(String idPerfil)
         {
-
-            for (int i = 0; i < Perfiles.Count; i++)
+            Perfil retorno = null;
+            lock (Perfiles)
             {
-                if (Perfiles[i].UserName.Equals(idPerfil))
+                for (int i = 0; i < Perfiles.Count; i++)
                 {
-                    return Perfiles[i];
+                    if (Perfiles[i].UserName.Equals(idPerfil))
+                    {
+                        retorno = Perfiles[i];
+                    }
                 }
+            }
+
+            if (retorno is not null)
+            {
+                return retorno;
             }
             throw new ArgumentException("El perfil no existe");
         }
 
-        public String BuscarUsuarioNombre(String Nombre){
+        public String BuscarUsuarioNombre(String Nombre)
+        {
             StringBuilder retorno = new StringBuilder();
-
-            for (int i = 0; i < Perfiles.Count; i++)
+            lock (Perfiles)
             {
-                if (Perfiles[i].Name.ToLower().Contains(Nombre.ToLower()))
+                for (int i = 0; i < Perfiles.Count; i++)
                 {
-                    retorno.Append(Perfiles[i].ToString());
-                    retorno.AppendLine("---------------------------");
+                    if (Perfiles[i].Name.ToLower().Contains(Nombre.ToLower()))
+                    {
+                        retorno.Append(Perfiles[i].ToString());
+                        retorno.AppendLine("---------------------------");
+                    }
                 }
             }
+
             return retorno.ToString();
         }
 
         public Usuario BuscarUsuarioGuid(Guid guid)
         {
-            
-            Usuario usuario = new Usuario();
-            usuario.guid = guid;
-            for (int i = 0; i < Usuarios.Count; i++)
+
+            Usuario usuario = null;
+            lock (Usuarios)
             {
-                if (Usuarios[i].guid.Equals(usuario.guid))
+                for (int i = 0; i < Usuarios.Count; i++)
                 {
-                    return Usuarios[i];
+                    if (Usuarios[i].guid.Equals(guid))
+                    {
+                        usuario = Usuarios[i];
+                        break;
+                    }
                 }
             }
-            
-            
+
+            if (usuario is not null)
+            {
+                return usuario;
+            }
+
             throw new ArgumentException("No está autorizado a realizar esta operacion");
 
         }
@@ -147,56 +173,73 @@ namespace LKAdin
         public String BuscarPorHabilidad(String[] habilidades)
         {
             StringBuilder coincidente = new StringBuilder();
-            for (int i = 0; i < Perfiles.Count; i++)
+            lock (Perfiles)
             {
-
-                int coincidencias = 0;
-                Perfil perfil = Perfiles[i];
-                for (int j = 0; j < habilidades.Length; j++)
+                for (int i = 0; i < Perfiles.Count; i++)
                 {
-                    for (int k = 0; k < perfil.Habilidades.Count; k++)
-                    {
-                        if (habilidades[j].Equals(perfil.Habilidades[k]))
-                        {
-                            coincidencias++;
-                            break;
-                        }
-                    }
-                    if(coincidencias == habilidades.Length)
-                    {
-                        coincidente.Append(perfil.ToString());
-                        coincidente.Append("---------------------------");
 
+                    int coincidencias = 0;
+                    Perfil perfil = Perfiles[i];
+                    for (int j = 0; j < habilidades.Length; j++)
+                    {
+                        for (int k = 0; k < perfil.Habilidades.Count; k++)
+                        {
+                            if (habilidades[j].Equals(perfil.Habilidades[k]))
+                            {
+                                coincidencias++;
+                                break;
+                            }
+                        }
+                        if (coincidencias == habilidades.Length)
+                        {
+                            coincidente.Append(perfil.ToString());
+                            coincidente.Append("---------------------------");
+
+                        }
                     }
                 }
             }
+
             return coincidente.ToString();
         }
 
-        public String MensajesRecibidos (Perfil receptor)
+        public String MensajesRecibidos(Perfil receptor, bool sinLeer)
         {
-            StringBuilder mensajesRecibidos = new StringBuilder(); 
-            for (int i = 0; i < Mensajes.Count; i++)
+            StringBuilder mensajesRecibidos = new StringBuilder();
+            lock (Mensajeria)
             {
-                Mensajeria mensaje = Mensajes[i];
-                if (mensaje.Receptor.Equals(receptor) && !mensaje.Leido)
+                for (int i = 0; i < Mensajes.Count; i++)
                 {
-                    
-                    mensajesRecibidos.Append(mensaje.ToString());
-                    mensaje.Leido = true;
-                    
+                    Mensajeria mensaje = Mensajes[i];
+                    if (mensaje.Receptor.Equals(receptor) && !mensaje.Leido)
+                    {
+                        if (!mensaje.Leido && sinLeer)
+                        {
+                            mensajesRecibidos.Append(mensaje.ToString());
+                            mensaje.Leido = true;
+                        }
+                        else
+                        {
+                            mensajesRecibidos.Append(mensaje.ToString());
+
+                        }
+                    }
                 }
             }
+
             return mensajesRecibidos.ToString();
         }
 
-        public  void EnviarMensaje (string mensaje, Perfil emisor, Perfil receptor)
+        public void EnviarMensaje(string mensaje, Perfil emisor, Perfil receptor)
         {
             Mensajeria enviarMensaje = new Mensajeria();
             enviarMensaje.mensajes = mensaje;
             enviarMensaje.Emisor = emisor;
             enviarMensaje.Receptor = receptor;
-            Mensajes.Add(enviarMensaje);
+            lock (Mensajes)
+            {
+                Mensajes.Add(enviarMensaje);
+            }
         }
 
         public Controlador()

@@ -11,8 +11,9 @@ namespace LKAdin
         {
             string serverIp = settingsManager.ReadSettings(ConfigServidor.ServerIpConfig);
             int serverPort = int.Parse(settingsManager.ReadSettings(ConfigServidor.ServerPortConfig));
+            string rutaImagenes = settingsManager.ReadSettings(ConfigServidor.PictureFolder);
             Controlador controlador = new Controlador();
-            Servidor servidor = new Servidor(controlador, serverIp, serverPort);
+            Servidor servidor = new Servidor(controlador, serverIp, serverPort, rutaImagenes);
         }
     }
 }

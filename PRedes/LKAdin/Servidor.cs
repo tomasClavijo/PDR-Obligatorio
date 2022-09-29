@@ -1,6 +1,7 @@
 ﻿using Protocolo;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Net;
@@ -18,14 +19,16 @@ namespace LKAdin
         EndPoint endPointServidor;
         int puerto;
         String ip;
+        String rutaFotos;
         Controlador controlador;
 
 
-        public Servidor(Controlador controlador, string ip, int puerto)
+        public Servidor(Controlador controlador, string ip, int puerto, string pictureFolder)
         {
             this.ip = ip;
             this.puerto = puerto;
             this.controlador = controlador;
+            this.rutaFotos = pictureFolder;
             Configurar();
             RecibirClientes();
         }
@@ -45,13 +48,13 @@ namespace LKAdin
                 var socketCliente = socketServidor.Accept();
                 Console.WriteLine("Cliente conectado");
                 var clienteManejoSocket = new ManejoDataSocket(socketCliente);
-                Thread t1 = new Thread(() => ManejarCliente(socketCliente, clienteManejoSocket, controlador));
+                Thread t1 = new Thread(() => ManejarCliente(socketCliente, clienteManejoSocket, controlador, rutaFotos));
                 t1.IsBackground = true;
                 t1.Start();
             }
         }
         
-        static void ManejarCliente(Socket socketCliente, ManejoDataSocket manejo, Controlador control)
+        static void ManejarCliente(Socket socketCliente, ManejoDataSocket manejo, Controlador control, String rutaImagenes)
         {
             bool clienteConectado = true;
             while (clienteConectado)
@@ -86,13 +89,17 @@ namespace LKAdin
                                     nombre = mensajeDescomprimido[0];
                                     password = mensajeDescomprimido[1];
                                     userName = mensajeDescomprimido[2];
-                                    (Guid, String) resultado = control.AltaUsuario(nombre, password, userName);
-                                    guid = resultado.Item1;
-                                    respuesta = guid.ToString() + "|" + resultado.Item2;
+                                    Guid resultado = control.AltaUsuario(nombre, password, userName);
+                                    guid = resultado;
+                                    respuesta = guid.ToString() + "|" + "Usuario creado correctamente";
                                 }
                                 catch (IndexOutOfRangeException)
                                 {
                                     respuesta = Guid.Empty.ToString() + "|" + "Faltaron datos";
+                                }
+                                catch (ArgumentException)
+                                {
+                                    respuesta = Guid.Empty.ToString() + "|" + "El usuario ya existe";
                                 }
                                 
                                 tipo = "RES";
@@ -130,7 +137,7 @@ namespace LKAdin
                                     guid = Guid.Parse(mensajeDescomprimido[0]);
                                     Usuario usuario = control.BuscarUsuarioGuid(guid);
                                     GestorArchivos gestor = new GestorArchivos(socketCliente);
-                                    gestor.ReceiveFile(usuario.UserName);
+                                    gestor.ReceiveFile(rutaImagenes+"\\"+usuario.UserName);
                                     respuesta = "Imagen cargada correctamente";
                                 }catch(ArgumentException e)
                                 {
@@ -159,13 +166,32 @@ namespace LKAdin
                                 {
                                     Perfil perfiABuscar = control.BuscarPerfilUserId(idP);
                                     String perfilesId = control.BuscarPerfilId(idP);
-                                    respuesta = perfilesId;
+                                    PropiedadesArchivo pA = new PropiedadesArchivo();
+                                    String rutaPerfilFoto = rutaImagenes + "\\" + perfiABuscar.Name + ".jpg";
+                                    bool tieneFoto = pA.FileExists(rutaPerfilFoto);
+                                    respuesta = perfilesId+"|"+tieneFoto.ToString();
+                                    
                                 }catch(ArgumentException e)
                                 {
                                     respuesta = e.Message;
                                 }
 
                                 tipo = "RES";
+                                break;
+                            case "54":
+                                String perfilId = mensajeDescomprimido[0];
+                                try
+                                {
+                                    Perfil perfiABuscar = control.BuscarPerfilUserId(perfilId);
+                                    String rutaPerfilFoto = rutaImagenes + "\\" + perfiABuscar.Name + ".jpg";
+                                    GestorArchivos fileCommsHandler = new GestorArchivos(socketCliente);
+                                    fileCommsHandler.SendFile(rutaPerfilFoto);
+                                    respuesta = "OK";
+                                }
+                                catch (ArgumentException e)
+                                {
+                                    respuesta = e.Message;
+                                }
                                 break;
                             case "61":
                                 try
@@ -187,8 +213,16 @@ namespace LKAdin
                             case "62":
                                 try
                                 {
-                                    Perfil perfilRecepcion = control.BuscarPerfilGuid(Guid.Parse(mensajeString));
-                                    respuesta = control.MensajesRecibidos(perfilRecepcion);
+                                    
+                                    Perfil perfilRecepcion = control.BuscarPerfilGuid(Guid.Parse(mensajeDescomprimido[0]));
+                                    if (mensajeDescomprimido[1] == "1")
+                                    {
+                                        respuesta = control.MensajesRecibidos(perfilRecepcion, true);
+                                    }
+                                    else
+                                    {
+                                        respuesta = control.MensajesRecibidos(perfilRecepcion, false);
+                                    }
                                 }
                                 catch(ArgumentException e)
                                 {
