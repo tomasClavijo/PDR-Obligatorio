@@ -57,7 +57,7 @@ namespace ClienT
             {
                 Console.WriteLine("Ingrese una habilidad o (X) para salir");
                 habilidad = Console.ReadLine();
-                if (habilidad != "X" && habilidad != "x")
+                if (habilidad != "X" && habilidad != "x" && habilidad!="")
                 {
                     habilidades.Add(habilidad);
                 }
