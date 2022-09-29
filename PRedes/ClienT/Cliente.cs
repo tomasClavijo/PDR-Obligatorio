@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using Protocolo;
 using System.Threading;
+using System.Linq.Expressions;
 
 namespace ClienT
 {
@@ -69,101 +70,110 @@ namespace ClienT
             string opcion = "#";
             while (!opcion.Contains("7"))
             {
-                Menu();
-                opcion = Console.ReadLine();
-                switch (opcion)
-                {
-                    case "1":
-                        Console.WriteLine("Conectando al servidor a través de datos asociados...");
-                        Thread.Sleep(10000);
-                        Console.WriteLine("Conexión establecida");
-                        break;
-                    case "2":
-                        Console.WriteLine("Ingrese su nombre");
-                        String username = Console.ReadLine();
-                        Console.WriteLine("Ingrese su username");
-                        String userID = Console.ReadLine();
-                        Console.WriteLine("Ingrese contraseña");
-                        String password = Console.ReadLine();
-                        AltaUsuario(username, password, userID);
-                        break;
-                    case "3":
-                        Console.WriteLine("Crear su perfil de usuario");
-                        Console.WriteLine("Ingrese descripcion de su perfil");
-                        String descripcion = Console.ReadLine();
-                        List <String> habilidades= CargarHabilidades();
-                        CrearPerfil(descripcion, habilidades);
-                        break;
-                    case "4":
-                        Console.WriteLine("Asociar foto al perfil, \n Introduzca ruta de la misma");
-                        string ruta = Console.ReadLine();
-                        AsociarFoto(ruta);
-                        break;
-                    case "5":
-                        Console.WriteLine("Consultar perfiles existentes");
-                        Console.WriteLine("1)Consultar por nombre \n2)Consultar por palabra clave" +
-                            " \n3)Consultar por username");
-                        int buscarPor = Int32.Parse(Console.ReadLine());
-                        switch (buscarPor)
-                            
-                        {
-                            case 1:
-                                Console.WriteLine("Introduzca nombre del usuario");
-                                String nombre = Console.ReadLine();
-                                Console.WriteLine("Perfiles:");
-                                BuscarPorNombre(nombre);
-                                break;
-                            case 2:
-                                List<String> habilidadesABuscar = CargarHabilidades();
-                                Console.WriteLine("Perfiles:");
-                                BuscarPorHabilidades(habilidadesABuscar);
-                                break;
-                            case 3:
-                                Console.WriteLine("Introduzca el username a buscar");
-                                String id = Console.ReadLine();
-                                Console.WriteLine("Perfiles:");
-                                BuscarPorId(id);
-                                break;
-                            default:
-                                Console.WriteLine("Opcion incorrecta");
-                                break;
-                        }
-                        break;
-                    case "6":
-                        Console.WriteLine("Enviar y recibir mensajes");
-                        Console.WriteLine("1)Enviar mensaje \n2)Recibir mensaje");
-                        int opcionMensaje = Int32.Parse(Console.ReadLine());
-                        switch (opcionMensaje)
-                        {
-                            case 1:
-                                Console.WriteLine("Introduzca username del receptor");
-                                String nombre = Console.ReadLine();
-                                Console.WriteLine("Introduzca mensaje");
-                                String mensaje = Console.ReadLine();
-                                EnviarMensaje(nombre, mensaje);
-                                break;
-                            case 2:
-                                int opcionRecibir = 0;
-                                while(opcionRecibir != 1 || opcionRecibir != 2)
-                                {
-                                    Console.WriteLine("1)Mostrar nuevos mensajes \n2)Mostrar mensajes anteriores");
-                                    opcionRecibir = int.Parse(Console.ReadLine());
-                                }
-                                
-                                RecibirMensajes(opcionRecibir);
-                                break;
-                            default:
-                                Console.WriteLine("Opcion incorrecta");
-                                break;
-                        }
+                try{
 
-                        break;
-                    case "7":
-                        Console.WriteLine("Sesion finalizada");
-                        break;
-                    default:
-                        Console.WriteLine("Opcion no valida");
-                        break;
+
+                    Menu();
+                    opcion = Console.ReadLine();
+                    switch (opcion)
+                    {
+                        case "1":
+                            Console.WriteLine("Conectando al servidor a través de datos asociados...");
+                            Thread.Sleep(10000);
+                            Console.WriteLine("Conexión establecida");
+                            break;
+                        case "2":
+                            Console.WriteLine("Ingrese su nombre");
+                            String username = Console.ReadLine();
+                            Console.WriteLine("Ingrese su username");
+                            String userID = Console.ReadLine();
+                            Console.WriteLine("Ingrese contraseña");
+                            String password = Console.ReadLine();
+                            AltaUsuario(username, password, userID);
+                            break;
+                        case "3":
+                            Console.WriteLine("Crear su perfil de usuario");
+                            Console.WriteLine("Ingrese descripcion de su perfil");
+                            String descripcion = Console.ReadLine();
+                            List<String> habilidades = CargarHabilidades();
+                            CrearPerfil(descripcion, habilidades);
+                            break;
+                        case "4":
+                            Console.WriteLine("Asociar foto al perfil, \n Introduzca ruta de la misma");
+                            string ruta = Console.ReadLine();
+                            AsociarFoto(ruta);
+                            break;
+                        case "5":
+                            Console.WriteLine("Consultar perfiles existentes");
+                            Console.WriteLine("1)Consultar por nombre \n2)Consultar por palabra clave" +
+                                " \n3)Consultar por username");
+                            int buscarPor = Int32.Parse(Console.ReadLine());
+                            switch (buscarPor)
+
+                            {
+                                case 1:
+                                    Console.WriteLine("Introduzca nombre del usuario");
+                                    String nombre = Console.ReadLine();
+                                    Console.WriteLine("Perfiles:");
+                                    BuscarPorNombre(nombre);
+                                    break;
+                                case 2:
+                                    List<String> habilidadesABuscar = CargarHabilidades();
+                                    Console.WriteLine("Perfiles:");
+                                    BuscarPorHabilidades(habilidadesABuscar);
+                                    break;
+                                case 3:
+                                    Console.WriteLine("Introduzca el username a buscar");
+                                    String id = Console.ReadLine();
+                                    Console.WriteLine("Perfiles:");
+                                    BuscarPorId(id);
+                                    break;
+                                default:
+                                    Console.WriteLine("Opcion incorrecta");
+                                    break;
+                            }
+                            break;
+                        case "6":
+                            Console.WriteLine("Enviar y recibir mensajes");
+                            Console.WriteLine("1)Enviar mensaje \n2)Recibir mensaje");
+                            int opcionMensaje = Int32.Parse(Console.ReadLine());
+                            switch (opcionMensaje)
+                            {
+                                case 1:
+                                    Console.WriteLine("Introduzca username del receptor");
+                                    String nombre = Console.ReadLine();
+                                    Console.WriteLine("Introduzca mensaje");
+                                    String mensaje = Console.ReadLine();
+                                    EnviarMensaje(nombre, mensaje);
+                                    break;
+                                case 2:
+                                    int opcionRecibir = 0;
+                                    while (opcionRecibir != 1 || opcionRecibir != 2)
+                                    {
+                                        Console.WriteLine("1)Mostrar nuevos mensajes \n2)Mostrar mensajes anteriores");
+                                        opcionRecibir = int.Parse(Console.ReadLine());
+                                    }
+
+                                    RecibirMensajes(opcionRecibir);
+                                    break;
+                                default:
+                                    Console.WriteLine("Opcion incorrecta");
+                                    break;
+                            }
+
+                            break;
+                        case "7":
+                            Console.WriteLine("Sesion finalizada");
+                            break;
+                        default:
+                            Console.WriteLine("Opcion no valida");
+                            break;
+                    }
+                }catch (SocketException)
+                {
+                    opcion = "7";
+                    Console.WriteLine("Servidor desconectado, pulse cualquier tecla para salir");
+                    Console.ReadLine();
                 }
             }
 

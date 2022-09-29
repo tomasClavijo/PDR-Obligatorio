@@ -29,6 +29,7 @@ namespace LKAdin
 
             lock (Usuarios)
             {
+
                 foreach (Usuario u in Usuarios)
                 {
                     found = u.Equals(usuario);
@@ -206,7 +207,7 @@ namespace LKAdin
         public String MensajesRecibidos(Perfil receptor, bool sinLeer)
         {
             StringBuilder mensajesRecibidos = new StringBuilder();
-            lock (Mensajeria)
+            lock (Mensajes)
             {
                 for (int i = 0; i < Mensajes.Count; i++)
                 {
