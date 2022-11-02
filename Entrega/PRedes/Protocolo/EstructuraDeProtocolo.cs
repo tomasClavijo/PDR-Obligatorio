@@ -8,7 +8,7 @@ namespace Protocolo
 {
     public static class EstructuraDeProtocolo
     {
-        public static void envio(String tipo, String comando, int largo, String mensaje, ManejoDataSocket socket)
+        public static async Task envioAsync(String tipo, String comando, int largo, String mensaje, ManejoDataSocket socket)
         {
 
             byte[] tipoEnBytes = Encoding.UTF8.GetBytes(tipo);
@@ -16,23 +16,25 @@ namespace Protocolo
             byte[] largoEnBytes = BitConverter.GetBytes(largo);
             byte[] mensajeEnBytes = Encoding.UTF8.GetBytes(mensaje);
 
-            socket.Send(tipoEnBytes);
-            socket.Send(codigoEnBytes);
-            socket.Send(largoEnBytes);
-            socket.Send(mensajeEnBytes);
+            var taskTipo =  socket.SendAsync(tipoEnBytes);
+            var taskCodigo =  socket.SendAsync(codigoEnBytes);
+            var taskLargo = socket.SendAsync(largoEnBytes);
+            var taskMensaje = socket.SendAsync(mensajeEnBytes);
+            await Task.WhenAll(taskTipo, taskCodigo, taskLargo, taskMensaje);
+
         }
 
 
-        public static List<String> recibo(ManejoDataSocket manejo)
+        public static async Task<List<string>> reciboAsync(ManejoDataSocket manejo)
         {
             List<String> retorno = new List<string>();
-            byte[] tiopoMensaje = manejo.Recive(VariablesConstantes.Header);
+            byte[] tiopoMensaje = await manejo.ReciveAsync(VariablesConstantes.Header);
             String tipo = Encoding.UTF8.GetString(tiopoMensaje);
-            byte[] comandMensaje = manejo.Recive(VariablesConstantes.Comand);
+            byte[] comandMensaje = await manejo.ReciveAsync(VariablesConstantes.Comand);
             String comando = Encoding.UTF8.GetString(comandMensaje);
-            byte[] largoMensaje = manejo.Recive(VariablesConstantes.Length);
+            byte[] largoMensaje = await manejo.ReciveAsync(VariablesConstantes.Length);
             int largo = BitConverter.ToInt32(largoMensaje);
-            byte[] mensaje = manejo.Recive(largo);
+            byte[] mensaje = await manejo.ReciveAsync(largo);
             String mensajeString = Encoding.UTF8.GetString(mensaje);
             var mensajeDescomprimido = mensajeString.Split("|");
             retorno.Add(tipo);

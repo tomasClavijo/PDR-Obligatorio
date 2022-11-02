@@ -21,6 +21,7 @@ namespace LKAdin
         String ip;
         String rutaFotos;
         Controlador controlador;
+        bool corriendo = true;
 
 
         public Servidor(Controlador controlador, string ip, int puerto, string pictureFolder)
@@ -32,7 +33,8 @@ namespace LKAdin
             try
             {
                 Configurar();
-                Task task = await RecibirClientesAsync();
+                Task recibir = RecibirClientesAsync();
+                Task.WaitAny(recibir);
             }
             catch (SocketException)
             {
@@ -51,7 +53,7 @@ namespace LKAdin
 
         public async Task RecibirClientesAsync()
         {
-            while (true)
+            while (corriendo)
             {
                 var tcpCliente = await tcpServidor.AcceptTcpClientAsync();
                 Console.WriteLine("Cliente conectado");
@@ -68,7 +70,7 @@ namespace LKAdin
             {
                 try
                 {
-                    List<String> recibo = EstructuraDeProtocolo.recibo(manejo);
+                    List<String> recibo = await EstructuraDeProtocolo.reciboAsync(manejo);
                     String tipo = recibo[0];
                     String comando = recibo[1];
                     String mensajeString = recibo[3];
@@ -255,7 +257,7 @@ namespace LKAdin
 
                         }
                         respuestaLargo = respuesta.Length;
-                        EstructuraDeProtocolo.envio(tipo, comando, respuestaLargo, respuesta, manejo);
+                        await EstructuraDeProtocolo.envioAsync(tipo, comando, respuestaLargo, respuesta, manejo);
                     }
                 }
                 catch (SocketException e)
@@ -268,6 +270,7 @@ namespace LKAdin
                 }
             }
             Console.WriteLine("Cliente desconectado");
+            
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Protocolo
 {
@@ -22,18 +23,18 @@ namespace Protocolo
             _stream.Close();
         }
 
-        public void Send(byte[] buffer)
+        public async Task SendAsync(byte[] buffer)
         {
-            _stream.Write(buffer);
+            await _stream.WriteAsync(buffer);
         }
 
-        public byte[] Recive(int size)
+        public async Task<byte[]> ReciveAsync(int size)
         {
             byte[] buffer = new byte[size];
             int offset = 0;
             while (offset < size)
             {
-                int recived = _stream.Read(buffer, offset, size - offset);
+                int recived =  await _stream.ReadAsync(buffer, offset, size - offset);
                 if (recived == 0)
                 {
                     Close();

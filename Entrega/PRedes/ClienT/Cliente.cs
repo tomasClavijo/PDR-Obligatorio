@@ -7,6 +7,7 @@ using Protocolo;
 using System.Threading;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace ClienT
 {
@@ -23,7 +24,7 @@ namespace ClienT
             try
             {
                 rutaImagen = rutaImagenes;
-                ConfigurarConexionAsync(ServerIp, ServerPort, LocalIp);
+                ConfigurarConexion(ServerIp, ServerPort, LocalIp);
             }
             catch (SocketException)
             {
@@ -33,14 +34,14 @@ namespace ClienT
 
         }
 
-        public async Task ConfigurarConexionAsync(String ServerIp, int ServerPort, String LocalIp)
+        public async void ConfigurarConexion(String ServerIp, int ServerPort, String LocalIp)
         {
             var endPointLocal = new IPEndPoint(IPAddress.Parse(LocalIp), 0);
-            var endPointRemoto = new IPEndPoint(IPAddress.Parse(ServerIp), ServerPort);
             _cliente = new TcpClient(endPointLocal);
-            await _cliente.ConnectAsync(IPAddress.Parse(ServerIp), ServerPort);
+            var conectado = _cliente.ConnectAsync(IPAddress.Parse(ServerIp), ServerPort);
             manejoDataSocket = new ManejoDataSocket(_cliente);
-            await InterfazAsync();
+            var task = InterfazAsync();
+            await task;
             CerrarConexion();
         }
 
@@ -72,19 +73,21 @@ namespace ClienT
             return habilidades;
         }
 
-        public async Task<string> InterfazAsync()
+        public async Task InterfazAsync()
         {
-            await using (NetworkStream newtworkStream = _cliente.GetStream());
+            await using (var networkStream = _cliente.GetStream());
             string opcion = "#";
+            
             try
             {
+                Task Alta, Perfil, Foto, BuscarHabilidad, BuscarNombre, BuscarPorId, Enviar, Recibir;
+                Alta = Perfil = Foto = BuscarHabilidad = BuscarNombre = BuscarPorId = Enviar = Recibir = Task.CompletedTask;
                 while (!opcion.Contains("7"))
                 {
 
-
-
                     Menu();
                     opcion = Console.ReadLine();
+
                     switch (opcion)
                     {
                         case "1":
@@ -99,19 +102,19 @@ namespace ClienT
                             String userID = Console.ReadLine();
                             Console.WriteLine("Ingrese contraseña");
                             String password = Console.ReadLine();
-                            AltaUsuario(username, password, userID);
+                            Alta = AltaUsuarioAsync(username, password, userID);
                             break;
                         case "3":
                             Console.WriteLine("Crear su perfil de usuario");
                             Console.WriteLine("Ingrese descripcion de su perfil");
                             String descripcion = Console.ReadLine();
                             List<String> habilidades = CargarHabilidades();
-                            CrearPerfil(descripcion, habilidades);
+                            Perfil = CrearPerfilAsync(descripcion, habilidades);
                             break;
                         case "4":
                             Console.WriteLine("Asociar foto al perfil, \n Introduzca ruta de la misma");
                             string ruta = Console.ReadLine();
-                            AsociarFoto(ruta);
+                            Foto = AsociarFotoAsync(ruta);
                             break;
                         case "5":
                             Console.WriteLine("Consultar perfiles existentes");
@@ -125,18 +128,18 @@ namespace ClienT
                                     Console.WriteLine("Introduzca nombre del usuario");
                                     String nombre = Console.ReadLine();
                                     Console.WriteLine("Perfiles:");
-                                    BuscarPorNombre(nombre);
+                                    BuscarNombre = BuscarPorNombreAsync(nombre);
                                     break;
                                 case 2:
                                     List<String> habilidadesABuscar = CargarHabilidades();
                                     Console.WriteLine("Perfiles:");
-                                    BuscarPorHabilidades(habilidadesABuscar);
+                                    BuscarHabilidad = BuscarPorHabilidadesAsync(habilidadesABuscar);
                                     break;
                                 case 3:
                                     Console.WriteLine("Introduzca el username a buscar");
                                     String id = Console.ReadLine();
                                     Console.WriteLine("Perfiles:");
-                                    BuscarPorId(id);
+                                    BuscarPorId = BuscarPorIdAsync(id);
                                     break;
                                 default:
                                     Console.WriteLine("Opcion incorrecta");
@@ -154,7 +157,7 @@ namespace ClienT
                                     String nombre = Console.ReadLine();
                                     Console.WriteLine("Introduzca mensaje");
                                     String mensaje = Console.ReadLine();
-                                    EnviarMensaje(nombre, mensaje);
+                                    Enviar = EnviarMensajeAsync(nombre, mensaje);
                                     break;
                                 case 2:
                                     int opcionRecibir = 0;
@@ -164,7 +167,7 @@ namespace ClienT
                                         opcionRecibir = int.Parse(Console.ReadLine());
                                     }
 
-                                    RecibirMensajes(opcionRecibir);
+                                    Recibir = RecibirMensajesAsync(opcionRecibir);
                                     break;
                                 default:
                                     Console.WriteLine("Opcion incorrecta");
@@ -179,6 +182,8 @@ namespace ClienT
                             Console.WriteLine("Opcion no valida");
                             break;
                     }
+                    await Task.WhenAny
+                                (Alta, Perfil, Foto, BuscarNombre, BuscarHabilidad, BuscarPorId, Enviar, Recibir);
                 }
 
 
@@ -193,23 +198,22 @@ namespace ClienT
                 manejoDataSocket.Close();
             }
 
-            return opcion;
         }
 
-        public void AltaUsuario(String usernameS, String passwordS, String id)
+        public async Task AltaUsuarioAsync(String usernameS, String passwordS, String id)
         {
             int largo = usernameS.Length + passwordS.Length + id.Length + 2;
             String mensaje = usernameS + "|" + passwordS + "|" + id;
 
-            EstructuraDeProtocolo.envio("REQ", "02", largo, mensaje, manejoDataSocket);
+            await EstructuraDeProtocolo.envioAsync("REQ", "02", largo, mensaje, manejoDataSocket);
 
-            List<String> retorno = EstructuraDeProtocolo.recibo(manejoDataSocket);
+            List<String> retorno = await EstructuraDeProtocolo.reciboAsync(manejoDataSocket);
 
             session = Guid.Parse(retorno[3]);
             Console.WriteLine(retorno[4]);
         }
 
-        public void CrearPerfil(String descripcion, List<String> habilidades)
+        public async Task CrearPerfilAsync(String descripcion, List<String> habilidades)
         {
 
             int largoDescripcion = descripcion.Length;
@@ -232,22 +236,22 @@ namespace ClienT
 
             int largoHabilidades = skills.Length;
 
-            EstructuraDeProtocolo.envio("REQ", "03", largoHabilidades, skills, manejoDataSocket);
-            List<String> retorno = EstructuraDeProtocolo.recibo(manejoDataSocket);
+            await EstructuraDeProtocolo.envioAsync("REQ", "03", largoHabilidades, skills, manejoDataSocket);
+            List<String> retorno = await EstructuraDeProtocolo.reciboAsync(manejoDataSocket);
             Console.WriteLine(retorno[3]);
 
         }
 
-        public void AsociarFoto(String ruta)
+        public async Task AsociarFotoAsync(String ruta)
         {
             String envio = session.ToString();
             int largo = envio.Length;
-            EstructuraDeProtocolo.envio("REQ", "04", largo, envio, manejoDataSocket);
+            await EstructuraDeProtocolo.envioAsync("REQ", "04", largo, envio, manejoDataSocket);
             GestorArchivos fileCommsHandler = new GestorArchivos(_cliente.Client);
             try
             {
                 fileCommsHandler.SendFile(ruta);
-                List<String> retorno = EstructuraDeProtocolo.recibo(manejoDataSocket);
+                List<String> retorno = await EstructuraDeProtocolo.reciboAsync(manejoDataSocket);
                 Console.WriteLine(retorno[3]);
             }
             catch (Exception)
@@ -259,14 +263,14 @@ namespace ClienT
         }
 
 
-        public void BuscarPorNombre(String nombre)
+        public async Task BuscarPorNombreAsync(String nombre)
         {
             int largo = nombre.Length;
-            EstructuraDeProtocolo.envio("REQ", "51", largo, nombre, manejoDataSocket);
-            List<String> respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);
+            await EstructuraDeProtocolo.envioAsync("REQ", "51", largo, nombre, manejoDataSocket);
+            List<String> respuesta = await EstructuraDeProtocolo.reciboAsync(manejoDataSocket);
             Console.WriteLine(respuesta[3]);
         }
-        public void BuscarPorHabilidades(List<String> habilidades)
+        public async Task BuscarPorHabilidadesAsync(List<String> habilidades)
         {
             StringBuilder habilidad = new StringBuilder();
 
@@ -284,16 +288,17 @@ namespace ClienT
 
             int largoHabilidades = skills.Length;
 
-            EstructuraDeProtocolo.envio("REQ", "52", largoHabilidades, skills, manejoDataSocket);
-            List<String> respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);
+            await EstructuraDeProtocolo.envioAsync("REQ", "52", largoHabilidades, skills, manejoDataSocket);
+            List<String> respuesta = await EstructuraDeProtocolo.reciboAsync(manejoDataSocket);
+            
             Console.WriteLine(respuesta[3]);
         }
 
-        public void BuscarPorId(String id)
+        public async Task BuscarPorIdAsync(String id)
         {
             int largo = id.Length;
-            EstructuraDeProtocolo.envio("REQ", "53", largo, id, manejoDataSocket);
-            List<String> respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);
+            await EstructuraDeProtocolo.envioAsync("REQ", "53", largo, id, manejoDataSocket);
+            List<String> respuesta = await EstructuraDeProtocolo.reciboAsync(manejoDataSocket);
             Console.WriteLine(respuesta[3]);
             if (respuesta[4] == "True")
             {
@@ -302,30 +307,30 @@ namespace ClienT
                 {
                     String envio = id + "|" + rutaImagen;
                     largo = envio.Length;
-                    EstructuraDeProtocolo.envio("REQ", "54", largo, envio, manejoDataSocket);
+                    await EstructuraDeProtocolo.envioAsync("REQ", "54", largo, envio, manejoDataSocket);
                     GestorArchivos fileCommsHandler = new GestorArchivos(_cliente.Client);
                     fileCommsHandler.ReceiveFile(rutaImagen + "\\" + id);
-                    respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);
+                    respuesta = await EstructuraDeProtocolo.reciboAsync(manejoDataSocket);
                     Console.WriteLine(respuesta[3]);
                 }
             }
         }
 
-        public void EnviarMensaje(String userName, String mensaje)
+        public async Task EnviarMensajeAsync(String userName, String mensaje)
         {
             String envio = userName + "|" + mensaje + "|" + session.ToString();
             int largo = envio.Length;
-            EstructuraDeProtocolo.envio("REQ", "61", largo, envio, manejoDataSocket);
-            List<String> respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);
+            await EstructuraDeProtocolo.envioAsync("REQ", "61", largo, envio, manejoDataSocket);
+            List<String> respuesta = await EstructuraDeProtocolo.reciboAsync(manejoDataSocket);
             Console.WriteLine(respuesta[3]);
         }
 
-        public void RecibirMensajes(int opcion)
+        public async Task RecibirMensajesAsync(int opcion)
         {
             String envio = session.ToString() + "|" + opcion;
             int largo = envio.Length;
-            EstructuraDeProtocolo.envio("REQ", "62", largo, envio, manejoDataSocket);
-            List<String> respuesta = EstructuraDeProtocolo.recibo(manejoDataSocket);
+            await EstructuraDeProtocolo.envioAsync("REQ", "62", largo, envio, manejoDataSocket);
+            List<String> respuesta = await EstructuraDeProtocolo.reciboAsync(manejoDataSocket);
             Console.WriteLine(respuesta[3]);
 
         }
@@ -334,7 +339,5 @@ namespace ClienT
             _cliente.Close();
         }
     }
-
-
 }
 
