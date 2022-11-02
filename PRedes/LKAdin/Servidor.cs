@@ -63,6 +63,8 @@ namespace LKAdin
                 Thread t1 = new Thread(() => ManejarCliente(socketCliente, clienteManejoSocket, controlador, rutaFotos));
                 t1.IsBackground = true;
                 t1.Start();
+                var tcpClientSocket = await tcpListener.AcceptTcpClientAsync();
+                var task = Task.Run(async () => await HandleClient(tcpClientSocket));
             }
         }
 

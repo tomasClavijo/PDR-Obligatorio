@@ -6,6 +6,7 @@ using System.Text;
 using Protocolo;
 using System.Threading;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace ClienT
 {
@@ -21,11 +22,8 @@ namespace ClienT
         {
             try
             {
-                ConfigurarConexion(ServerIp, ServerPort, LocalIp);
-                manejoDataSocket = new ManejoDataSocket(_cliente);
                 rutaImagen = rutaImagenes;
-                Interfaz();
-                CerrarConexion();
+                ConfigurarConexionAsync(ServerIp, ServerPort, LocalIp);
             }
             catch (SocketException)
             {
@@ -35,12 +33,15 @@ namespace ClienT
 
         }
 
-        public void ConfigurarConexion(String ServerIp, int ServerPort, String LocalIp)
+        public async Task ConfigurarConexionAsync(String ServerIp, int ServerPort, String LocalIp)
         {
             var endPointLocal = new IPEndPoint(IPAddress.Parse(LocalIp), 0);
             var endPointRemoto = new IPEndPoint(IPAddress.Parse(ServerIp), ServerPort);
             _cliente = new TcpClient(endPointLocal);
-            _cliente.Connect(endPointRemoto);
+            await _cliente.ConnectAsync(IPAddress.Parse(ServerIp), ServerPort);
+            manejoDataSocket = new ManejoDataSocket(_cliente);
+            await InterfazAsync();
+            CerrarConexion();
         }
 
         public void Menu()
@@ -71,8 +72,9 @@ namespace ClienT
             return habilidades;
         }
 
-        public String Interfaz()
+        public async Task<string> InterfazAsync()
         {
+            await using (NetworkStream newtworkStream = _cliente.GetStream());
             string opcion = "#";
             try
             {

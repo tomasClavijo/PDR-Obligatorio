@@ -32,7 +32,7 @@ namespace LKAdin
             try
             {
                 Configurar();
-                RecibirClientes();
+                Task task = await RecibirClientesAsync();
             }
             catch (SocketException)
             {
@@ -49,20 +49,19 @@ namespace LKAdin
             tcpServidor.Start();
         }
 
-        public void RecibirClientes()
+        public async Task RecibirClientesAsync()
         {
             while (true)
             {
-                var tcpCliente = tcpServidor.AcceptTcpClient();
+                var tcpCliente = await tcpServidor.AcceptTcpClientAsync();
                 Console.WriteLine("Cliente conectado");
                 var clienteManejoSocket = new ManejoDataSocket(tcpCliente);
-                Thread t1 = new Thread(() => ManejarCliente(tcpCliente, clienteManejoSocket, controlador, rutaFotos));
-                t1.IsBackground = true;
-                t1.Start();
+                var task = Task.Run(async () => await 
+                        ManejarCliente(tcpCliente, clienteManejoSocket, controlador, rutaFotos));
             }
         }
-
-        static void ManejarCliente(TcpClient cliente, ManejoDataSocket manejo, Controlador control, String rutaImagenes)
+        
+        static async Task ManejarCliente(TcpClient cliente, ManejoDataSocket manejo, Controlador control, String rutaImagenes)
         {
             bool clienteConectado = true;
             while (clienteConectado)
