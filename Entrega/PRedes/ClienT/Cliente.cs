@@ -75,7 +75,7 @@ namespace ClienT
 
         public async Task InterfazAsync()
         {
-            await using (var networkStream = _cliente.GetStream());
+            
             string opcion = "#";
             
             try
