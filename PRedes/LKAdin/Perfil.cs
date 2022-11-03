@@ -68,7 +68,7 @@ namespace LKAdin
             return sb.ToString();
         }
 
-        public String ToString()
+        public override String ToString()
         {
             return this.Name + "\n" +
                 "Descripcion: \n" + this.Descripcion + "\nHabilidades: \n" + habilidadesToString();

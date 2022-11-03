@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing.Text;
+using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Net;
@@ -15,12 +16,12 @@ namespace LKAdin
     public class Servidor
     {
         const int maximoEnBuffer = 1000;
-        static Socket socketServidor;
-        EndPoint endPointServidor;
+        static TcpListener tcpServidor;
         int puerto;
         String ip;
         String rutaFotos;
         Controlador controlador;
+        bool corriendo = true;
 
 
         public Servidor(Controlador controlador, string ip, int puerto, string pictureFolder)
@@ -32,7 +33,8 @@ namespace LKAdin
             try
             {
                 Configurar();
-                RecibirClientes();
+                Task recibir = RecibirClientesAsync();
+                Task.WaitAny(recibir);
             }
             catch (SocketException)
             {
@@ -42,40 +44,33 @@ namespace LKAdin
 
         }
 
-        public void Configurar()
-        {
-
-
-            socketServidor = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            endPointServidor = new IPEndPoint(IPAddress.Parse(ip), puerto);
-            socketServidor.Bind(endPointServidor);
-            socketServidor.Listen(maximoEnBuffer);
-
+        public void Configurar() { 
+            
+            var endPointServidor = new IPEndPoint(IPAddress.Parse(ip), puerto);
+            tcpServidor = new TcpListener(endPointServidor);
+            tcpServidor.Start();
         }
 
-        public void RecibirClientes()
+        public async Task RecibirClientesAsync()
         {
-            while (true)
+            while (corriendo)
             {
-                var socketCliente = socketServidor.Accept();
+                var tcpCliente = await tcpServidor.AcceptTcpClientAsync();
                 Console.WriteLine("Cliente conectado");
-                var clienteManejoSocket = new ManejoDataSocket(socketCliente);
-                Thread t1 = new Thread(() => ManejarCliente(socketCliente, clienteManejoSocket, controlador, rutaFotos));
-                t1.IsBackground = true;
-                t1.Start();
-                var tcpClientSocket = await tcpListener.AcceptTcpClientAsync();
-                var task = Task.Run(async () => await HandleClient(tcpClientSocket));
+                var clienteManejoSocket = new ManejoDataSocket(tcpCliente);
+                var task = Task.Run(async () => await 
+                        ManejarCliente(tcpCliente, clienteManejoSocket, controlador, rutaFotos));
             }
         }
-
-        static void ManejarCliente(Socket socketCliente, ManejoDataSocket manejo, Controlador control, String rutaImagenes)
+        
+        static async Task ManejarCliente(TcpClient cliente, ManejoDataSocket manejo, Controlador control, String rutaImagenes)
         {
             bool clienteConectado = true;
             while (clienteConectado)
             {
                 try
                 {
-                    List<String> recibo = EstructuraDeProtocolo.recibo(manejo);
+                    List<String> recibo = await EstructuraDeProtocolo.reciboAsync(manejo);
                     String tipo = recibo[0];
                     String comando = recibo[1];
                     String mensajeString = recibo[3];
@@ -151,7 +146,14 @@ namespace LKAdin
                                 {
                                     guid = Guid.Parse(mensajeDescomprimido[0]);
                                     Usuario usuario = control.BuscarUsuarioGuid(guid);
-                                    GestorArchivos gestor = new GestorArchivos(socketCliente);
+                                    GestorArchivos gestor = new GestorArchivos(cliente.Client);
+                                    PropiedadesArchivo pA = new PropiedadesArchivo();
+                                    String rutaPerfilFoto = rutaImagenes + "\\" + usuario.Name + ".jpg";
+                                    bool tieneFoto = pA.FileExists(rutaPerfilFoto);
+                                    if (tieneFoto)
+                                    {
+                                        File.Delete(rutaPerfilFoto);
+                                    }
                                     gestor.ReceiveFile(rutaImagenes + "\\" + usuario.UserName);
                                     respuesta = "Imagen cargada correctamente";
                                 }
@@ -205,8 +207,8 @@ namespace LKAdin
                                 {
                                     Perfil perfiABuscar = control.BuscarPerfilUserId(perfilId);
                                     String rutaPerfilFoto = rutaImagenes + "\\" + perfiABuscar.Name + ".jpg";
-                                    GestorArchivos fileCommsHandler = new GestorArchivos(socketCliente);
-                                    fileCommsHandler.SendFile(rutaPerfilFoto);
+                                    GestorArchivos fileCommsHandler = new GestorArchivos(cliente.Client);
+                                    await fileCommsHandler.SendFileAsync(rutaPerfilFoto);
                                     respuesta = "OK";
                                 }
                                 catch (ArgumentException e)
@@ -255,10 +257,10 @@ namespace LKAdin
 
                         }
                         respuestaLargo = respuesta.Length;
-                        EstructuraDeProtocolo.envio(tipo, comando, respuestaLargo, respuesta, manejo);
+                        await EstructuraDeProtocolo.envioAsync(tipo, comando, respuestaLargo, respuesta, manejo);
                     }
                 }
-                catch (SocketException e)
+                catch (SocketException)
                 {
                     clienteConectado = false;
                 }
@@ -268,6 +270,7 @@ namespace LKAdin
                 }
             }
             Console.WriteLine("Cliente desconectado");
+            
         }
 
 

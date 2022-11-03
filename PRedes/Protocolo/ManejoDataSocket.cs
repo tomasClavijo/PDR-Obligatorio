@@ -1,39 +1,42 @@
 ﻿using System;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Protocolo
 {
     public class ManejoDataSocket
     {
-        private readonly Socket _socket;
-        public ManejoDataSocket(Socket socket)
+
+        private readonly TcpClient _client;
+        private readonly NetworkStream _stream;
+
+        public ManejoDataSocket(TcpClient tcp)
         {
-            _socket = socket;
+            _client = tcp;
+            _stream = _client.GetStream();
         }
-        public void Send(byte[] buffer)
+        
+
+        public void Close()
         {
-            int offset = 0;
-            int size = buffer.Length;
-            while (offset < size)
-            {
-                int sent = _socket.Send(buffer, offset, size - offset, SocketFlags.None);
-                if (sent == 0)
-                {
-                    throw new SocketException();
-                }
-                offset += sent;
-            }
+            _stream.Close();
         }
 
-        public byte[] Recive(int size)
+        public async Task SendAsync(byte[] buffer)
+        {
+            await _stream.WriteAsync(buffer);
+        }
+
+        public async Task<byte[]> ReciveAsync(int size)
         {
             byte[] buffer = new byte[size];
             int offset = 0;
             while (offset < size)
             {
-                int recived = _socket.Receive(buffer, offset, size - offset, SocketFlags.None);
+                int recived =  await _stream.ReadAsync(buffer, offset, size - offset);
                 if (recived == 0)
                 {
+                    Close();
                     throw new SocketException();
                 }
                 offset += recived;

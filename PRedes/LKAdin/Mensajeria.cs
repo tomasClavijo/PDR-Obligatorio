@@ -13,7 +13,7 @@ namespace LKAdin
         public Perfil Receptor { get; set; }
         public bool Leido { get; set; }
 
-        public String ToString()
+        public override String ToString()
         {
             return "Mensaje de: \n" + Emisor.Name + "\n" + mensajes; 
         }
