@@ -1,9 +1,11 @@
 ﻿using Protocolo;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Protocolo
@@ -15,10 +17,8 @@ namespace Protocolo
         private readonly TratamientoArchivo _fileStreamHandler;
         private readonly ManejoDataSocket _socketHelper;
 
-        public GestorArchivos(Socket socket)
+        public GestorArchivos(TcpClient client)
         {
-            TcpClient client = new TcpClient();
-            client.Client = socket;
             _conversionHandler = new ConvertorVariables();
             _fileHandler = new PropiedadesArchivo();
             _fileStreamHandler = new TratamientoArchivo();
@@ -104,29 +104,35 @@ namespace Protocolo
             long fileParts = VariablesConstantes.CalculateFileParts(fileSize);
             long offset = 0;
             long currentPart = 1;
-
-            //Mientras tengo partes para recibir
-            while (fileSize > offset)
+            try
             {
-                byte[] data;
-                //1- Me fijo si es la ultima parte
-                if (currentPart == fileParts)
+                //Mientras tengo partes para recibir
+                while (fileSize > offset)
                 {
-                    //1.1 - Si es, recibo la ultima parte
-                    var lastPartSize = (int)(fileSize - offset);
-                    data = _socketHelper.ReciveAsync(lastPartSize).Result;
-                    offset += lastPartSize;
+                    byte[] data;
+                    //1- Me fijo si es la ultima parte
+                    if (currentPart == fileParts)
+                    {
+                        //1.1 - Si es, recibo la ultima parte
+                        var lastPartSize = (int)(fileSize - offset);
+                        data = _socketHelper.ReciveAsync(lastPartSize).Result;
+                        offset += lastPartSize;
+                    }
+                    else
+                    {
+                        //2.2- Si no, recibo una parte cualquiera
+                        data = _socketHelper.ReciveAsync(VariablesConstantes.MaxPacketSize).Result;
+                        offset += VariablesConstantes.MaxPacketSize;
+                    }
+                    //3- Escribo esa parte del archivo a disco
+                    _fileStreamHandler.Write(userName + ".jpg", data);
+                    currentPart++;
                 }
-                else
-                {
-                    //2.2- Si no, recibo una parte cualquiera
-                    data = _socketHelper.ReciveAsync(VariablesConstantes.MaxPacketSize).Result;
-                    offset += VariablesConstantes.MaxPacketSize;
-                }
-                //3- Escribo esa parte del archivo a disco
-                _fileStreamHandler.Write(userName+".jpg", data);
-                currentPart++;
+            }catch(AggregateException)
+            {
+                File.Delete(userName + ".jpg");
             }
+            
         }
     }
 }

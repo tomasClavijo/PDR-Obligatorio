@@ -146,7 +146,7 @@ namespace LKAdin
                                 {
                                     guid = Guid.Parse(mensajeDescomprimido[0]);
                                     Usuario usuario = control.BuscarUsuarioGuid(guid);
-                                    GestorArchivos gestor = new GestorArchivos(cliente.Client);
+                                    GestorArchivos gestor = new GestorArchivos(cliente);
                                     PropiedadesArchivo pA = new PropiedadesArchivo();
                                     String rutaPerfilFoto = rutaImagenes + "\\" + usuario.Name + ".jpg";
                                     bool tieneFoto = pA.FileExists(rutaPerfilFoto);
@@ -207,7 +207,7 @@ namespace LKAdin
                                 {
                                     Perfil perfiABuscar = control.BuscarPerfilUserId(perfilId);
                                     String rutaPerfilFoto = rutaImagenes + "\\" + perfiABuscar.Name + ".jpg";
-                                    GestorArchivos fileCommsHandler = new GestorArchivos(cliente.Client);
+                                    GestorArchivos fileCommsHandler = new GestorArchivos(cliente);
                                     await fileCommsHandler.SendFileAsync(rutaPerfilFoto);
                                     respuesta = "OK";
                                 }

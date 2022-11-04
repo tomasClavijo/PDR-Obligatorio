@@ -244,7 +244,7 @@ namespace ClienT
             String envio = session.ToString();
             int largo = envio.Length;
             await EstructuraDeProtocolo.envioAsync("REQ", "04", largo, envio, manejoDataSocket);
-            GestorArchivos fileCommsHandler = new GestorArchivos(_cliente.Client);
+            GestorArchivos fileCommsHandler = new GestorArchivos(_cliente);
             try
             {
                 await fileCommsHandler.SendFileAsync(ruta);
@@ -305,7 +305,7 @@ namespace ClienT
                     String envio = id + "|" + rutaImagen;
                     largo = envio.Length;
                     await EstructuraDeProtocolo.envioAsync("REQ", "54", largo, envio, manejoDataSocket);
-                    GestorArchivos fileCommsHandler = new GestorArchivos(_cliente.Client);
+                    GestorArchivos fileCommsHandler = new GestorArchivos(_cliente);
                     fileCommsHandler.ReceiveFile(rutaImagen + "\\" + id);
                     respuesta = await EstructuraDeProtocolo.reciboAsync(manejoDataSocket);
                     Console.WriteLine(respuesta[3]);
