@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Vr/0YJgaaAEqKN+cVQg7fHGd35rXjdiYMHtrmvH3Gi0EHv7d5G4gB8MoJYnBH6U224ePcZ+Jwe2wj1AIxHnW7A==",
+  "dgSpecHash": "AR/awJ+kYoZ2K2zouJbUEKjgoDlzNshX46Lh2Efl14h5jubJlrqnZhMWayoYIes5ITKbqMtr+xEiIpS64YfrBQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\LKAdin\\LKAdin.csproj",
+  "projectFilePath": "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\LKAdin\\LKAdin.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lucas\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\lucas\\.nuget\\packages\\system.configuration.configurationmanager\\6.0.1\\system.configuration.configurationmanager.6.0.1.nupkg.sha512",

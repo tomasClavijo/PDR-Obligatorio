@@ -499,11 +499,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\Protocolo\\Protocolo.csproj",
+      "projectUniqueName": "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\Protocolo\\Protocolo.csproj",
       "projectName": "Protocolo",
-      "projectPath": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\Protocolo\\Protocolo.csproj",
+      "projectPath": "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\Protocolo\\Protocolo.csproj",
       "packagesPath": "C:\\Users\\lucas\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\Protocolo\\obj\\",
+      "outputPath": "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\Protocolo\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\lucas\\AppData\\Roaming\\NuGet\\NuGet.Config",

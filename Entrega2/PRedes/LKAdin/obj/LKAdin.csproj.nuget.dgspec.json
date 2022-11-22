@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\LKAdin\\LKAdin.csproj": {}
+    "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\LKAdin\\LKAdin.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\LKAdin\\LKAdin.csproj": {
+    "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\LKAdin\\LKAdin.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\LKAdin\\LKAdin.csproj",
+        "projectUniqueName": "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\LKAdin\\LKAdin.csproj",
         "projectName": "LKAdin",
-        "projectPath": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\LKAdin\\LKAdin.csproj",
+        "projectPath": "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\LKAdin\\LKAdin.csproj",
         "packagesPath": "C:\\Users\\lucas\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\LKAdin\\obj\\",
+        "outputPath": "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\LKAdin\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\lucas\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -28,8 +28,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\Protocolo\\Protocolo.csproj": {
-                "projectPath": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\Protocolo\\Protocolo.csproj"
+              "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\Protocolo\\Protocolo.csproj": {
+                "projectPath": "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\Protocolo\\Protocolo.csproj"
               }
             }
           }
@@ -69,14 +69,14 @@
         }
       }
     },
-    "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\Protocolo\\Protocolo.csproj": {
+    "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\Protocolo\\Protocolo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\Protocolo\\Protocolo.csproj",
+        "projectUniqueName": "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\Protocolo\\Protocolo.csproj",
         "projectName": "Protocolo",
-        "projectPath": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\Protocolo\\Protocolo.csproj",
+        "projectPath": "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\Protocolo\\Protocolo.csproj",
         "packagesPath": "C:\\Users\\lucas\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lucas\\Desktop\\PRedes\\PRedes\\Protocolo\\obj\\",
+        "outputPath": "C:\\Users\\lucas\\Desktop\\PRedes\\Entrega2\\PRedes\\Protocolo\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\lucas\\AppData\\Roaming\\NuGet\\NuGet.Config",
