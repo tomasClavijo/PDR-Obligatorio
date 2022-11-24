@@ -131,6 +131,7 @@ namespace LKAdin
                         u.Name = (String.IsNullOrEmpty(nombre))? u.Name : nombre;
                         u.Password = (String.IsNullOrEmpty(password)) ? u.Password : password;
                         u.UserName = (String.IsNullOrEmpty(userNameNuevo)) ? u.UserName : userNameNuevo;
+                        return;
                     }
                 }
                 if (!found)
@@ -170,7 +171,15 @@ namespace LKAdin
             perfil.Habilidades = habilidades;
             lock (Perfiles)
             {
-                bool yaExiste = Perfiles.Contains(perfil);
+                bool yaExiste = false;
+                foreach(Perfil p in Perfiles)
+                {
+                    if (p.Usuario.UserName == usuario.UserName)
+                    {
+                        yaExiste = true;
+                        break;
+                    }
+                }
                 if (!yaExiste)
                 {
                     Perfiles.Add(perfil);
@@ -189,11 +198,6 @@ namespace LKAdin
             perfil.Habilidades = habilidades;
             lock (Perfiles)
             {
-                bool yaExiste = Perfiles.Contains(perfil);
-                if (!yaExiste)
-                {
-                    throw new ArgumentException("El perfil no existe");
-                }
                 foreach (Perfil p in Perfiles)
                 {
                     if (p.Equals(perfil))
@@ -203,6 +207,9 @@ namespace LKAdin
                         return;
                     }
                 }
+                
+                throw new ArgumentException("El perfil no existe");
+
             }
         }
 
@@ -222,6 +229,17 @@ namespace LKAdin
             }
         }
 
+        public Guid IniciarSesion(string username, string password)
+        {
+            foreach (Usuario usuario in Usuarios)
+            {
+                if (usuario.UserName == username && usuario.Password == password)
+                    return usuario.guid;
+            }
+            throw new ArgumentException("El usuario o contraseña incorrectos");
+        }
+        
+        
         public void EliminarFoto(string username)
         {
             string rutaImagenes = settingsManager.ReadSettings(ConfigServidor.PictureFolder);

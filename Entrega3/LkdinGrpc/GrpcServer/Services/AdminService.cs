@@ -111,6 +111,21 @@ namespace GrpcServer.Services
             return Task.FromResult(new MessageReply { Message = message });
         }
 
+        public override Task<MessageReply> DeletePicture(MessageReply username, ServerCallContext context)
+        {
+            Controlador controlador = Controlador.GetInstance();
+            string message = "Foto del perfil eliminada correctamente";
+            try
+            {
+                controlador.EliminarFoto(username.Message);
+            }
+            catch (Exception e)
+            {
+                message = e.Message;
+            }
+            return Task.FromResult(new MessageReply { Message = message });
+        }
+
         public override Task<UserList> GetUsers(Empty empty, ServerCallContext context)
         {
             Controlador controlador = Controlador.GetInstance();
@@ -124,6 +139,7 @@ namespace GrpcServer.Services
             }
             return Task.FromResult(request);
         }
+        
         public override Task<PerfilList> GetPerfiles(Empty empty, ServerCallContext context)
         {
             Controlador controlador = Controlador.GetInstance();

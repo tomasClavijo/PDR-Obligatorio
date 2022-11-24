@@ -52,7 +52,8 @@ namespace ClienT
             Console.WriteLine("4. Asociar foto al perfil");
             Console.WriteLine("5. Consultar perfiles existentes");
             Console.WriteLine("6. Enviar y recibir mensajes");
-            Console.WriteLine("7. Fin de conexion");
+            Console.WriteLine("7. Iniciar sesion");
+            Console.WriteLine("8. Fin de conexion");
         }
 
         public List<String> CargarHabilidades()
@@ -80,7 +81,7 @@ namespace ClienT
             try
             {
                 
-                while (!opcion.Contains("7"))
+                while (!opcion.Contains("8"))
                 {
 
                     Menu();
@@ -174,6 +175,13 @@ namespace ClienT
 
                             break;
                         case "7":
+                            Console.WriteLine("Ingrese su username");
+                            String userNameId = Console.ReadLine();
+                            Console.WriteLine("Ingrese contraseña");
+                            String passwordId = Console.ReadLine();
+                            tareaUsuario = InicioSesionAsync(userNameId, passwordId);
+                            break;
+                        case "8":
                             Console.WriteLine("Sesion finalizada");
                             break;
                         default:
@@ -203,6 +211,19 @@ namespace ClienT
             String mensaje = usernameS + "|" + passwordS + "|" + id;
 
             await EstructuraDeProtocolo.envioAsync("REQ", "02", largo, mensaje, manejoDataSocket);
+
+            List<String> retorno = await EstructuraDeProtocolo.reciboAsync(manejoDataSocket);
+
+            session = Guid.Parse(retorno[3]);
+            Console.WriteLine(retorno[4]);
+        }
+
+        public async Task InicioSesionAsync(String usernameS, String passwordS)
+        {
+            int largo = usernameS.Length + passwordS.Length + 1;
+            String mensaje = usernameS + "|" + passwordS;
+
+            await EstructuraDeProtocolo.envioAsync("REQ", "07", largo, mensaje, manejoDataSocket);
 
             List<String> retorno = await EstructuraDeProtocolo.reciboAsync(manejoDataSocket);
 
@@ -255,8 +276,6 @@ namespace ClienT
             {
                 Console.WriteLine("Imagen invalida");
             }
-
-
         }
 
 

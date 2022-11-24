@@ -280,8 +280,24 @@ namespace LKAdin
                                 {
                                     respuesta = e.Message;
                                 }
-
                                 tipo = "RES";
+                                break;
+                            case "07":
+                                try
+                                {
+                                    userName = mensajeDescomprimido[0];
+                                    password = mensajeDescomprimido[1];
+                                    Guid resultado = control.IniciarSesion(userName, password);
+                                    guid = resultado;
+                                    respuesta = guid.ToString() + "|" + "Usuario logueado correctamente";
+                                    mensajeLog = "Se inicio sesion con el usuario " + userName;
+                                    usernameLog = userName;
+                                }
+                                catch (IndexOutOfRangeException)
+                                {
+                                    respuesta = Guid.Empty.ToString() + "|" + "Usuario incorrecto";
+                                    mensajeLog = "Se intentó iniciar sesion sin exito";
+                                }
                                 break;
 
                         }
