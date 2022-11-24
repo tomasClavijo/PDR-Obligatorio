@@ -1,0 +1,2 @@
+obj\Release\net5.0\Protos/Admin.cs \
+obj\Release\net5.0\Protos/AdminGrpc.cs: Protos/admin.proto

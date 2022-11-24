@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 
 namespace LKAdin
 {
-    public class Perfil : Usuario
+    public class Perfil
     {
         public List<String> _habilidades;
         public String _descripcion;
+
+        public Usuario Usuario { get; set; }
 
         public List<String> Habilidades
         {
@@ -47,15 +49,12 @@ namespace LKAdin
 
         public Perfil(Usuario usuario)
         {
-            this.UserName = usuario.UserName;
-            this.Name = usuario.Name;
-            this.Password = usuario.Password;
-            this.guid = usuario.guid;
+            Usuario = usuario;
         }
-
+        
         public bool Equals(Perfil perfil)
         {
-            return this.guid.Equals(perfil.guid);
+            return this.Usuario.guid.Equals(perfil.Usuario.guid) || this.Usuario.UserName.Equals(perfil.Usuario.UserName);
         }
 
         public String habilidadesToString()
@@ -70,7 +69,7 @@ namespace LKAdin
 
         public override String ToString()
         {
-            return this.Name + "\n" +
+            return this.Usuario.Name + "\n" +
                 "Descripcion: \n" + this.Descripcion + "\nHabilidades: \n" + habilidadesToString();
 
         }

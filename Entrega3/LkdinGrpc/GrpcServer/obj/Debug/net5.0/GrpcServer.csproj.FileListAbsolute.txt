@@ -4,9 +4,11 @@ C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\obj\Debug\net5.0\Grp
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\obj\Debug\net5.0\GrpcServer.AssemblyInfo.cs
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\obj\Debug\net5.0\GrpcServer.csproj.CoreCompileInputs.cache
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\obj\Debug\net5.0\GrpcServer.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\App.config
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\appsettings.json
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\GrpcServer.exe
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\GrpcServer.dll.config
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\GrpcServer.deps.json
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\GrpcServer.runtimeconfig.json
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\GrpcServer.runtimeconfig.dev.json
@@ -19,12 +21,15 @@ C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\Grp
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\Grpc.Net.Client.dll
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\Grpc.Net.ClientFactory.dll
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\Grpc.Net.Common.dll
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\RabbitMQ.Client.dll
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\System.Configuration.ConfigurationManager.dll
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\System.Security.AccessControl.dll
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\System.Security.Permissions.dll
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.AccessControl.dll
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\LogsEnvios.dll
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\Protocolo.dll
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\LogsEnvios.pdb
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\Protocolo.pdb
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\obj\Debug\net5.0\scopedcss\bundle\GrpcServer.styles.css
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\obj\Debug\net5.0\staticwebassets\GrpcServer.StaticWebAssets.Manifest.cache
@@ -35,8 +40,3 @@ C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\obj\Debug\net5.0\ref
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\obj\Debug\net5.0\GrpcServer.pdb
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\obj\Debug\net5.0\GrpcServer.genruntimeconfig.cache
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\obj\Debug\net5.0\ref\GrpcServer.dll
-C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\App.config
-C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\GrpcServer.dll.config
-C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\RabbitMQ.Client.dll
-C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\LogsEnvios.dll
-C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\GrpcServer\bin\Debug\net5.0\LogsEnvios.pdb

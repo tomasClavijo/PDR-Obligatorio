@@ -1,0 +1,12 @@
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsEnvios\bin\Release\net5.0\LogsEnvios.deps.json
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsEnvios\bin\Release\net5.0\LogsEnvios.dll
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsEnvios\bin\Release\net5.0\LogsEnvios.pdb
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsEnvios\obj\Release\net5.0\LogsEnvios.csproj.AssemblyReference.cache
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsEnvios\obj\Release\net5.0\LogsEnvios.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsEnvios\obj\Release\net5.0\LogsEnvios.AssemblyInfoInputs.cache
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsEnvios\obj\Release\net5.0\LogsEnvios.AssemblyInfo.cs
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsEnvios\obj\Release\net5.0\LogsEnvios.csproj.CoreCompileInputs.cache
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsEnvios\obj\Release\net5.0\LogsEnvios.dll
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsEnvios\obj\Release\net5.0\refint\LogsEnvios.dll
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsEnvios\obj\Release\net5.0\LogsEnvios.pdb
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsEnvios\obj\Release\net5.0\ref\LogsEnvios.dll

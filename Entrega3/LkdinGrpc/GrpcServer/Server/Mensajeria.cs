@@ -15,7 +15,7 @@ namespace LKAdin
 
         public override String ToString()
         {
-            return "Mensaje de: \n" + Emisor.Name + "\n" + mensajes; 
+            return "Mensaje de: \n" + Emisor.Usuario.Name + "\n" + mensajes; 
         }
     }
 }

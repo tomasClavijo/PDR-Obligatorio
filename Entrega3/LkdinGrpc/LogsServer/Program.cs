@@ -26,6 +26,8 @@ namespace LogsServer
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://localhost:7010");
+                    
                 });
     }
 }

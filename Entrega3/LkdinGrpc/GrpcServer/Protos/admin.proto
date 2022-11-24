@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcServer";
+
+package admin;
+
+// The admin service definition.
+service Admin {
+  rpc PostUser(UserDTO) returns (MessageReply);  
+  rpc PatchUser(UserPatchDTO) returns (MessageReply);
+  rpc DeleteUser(MessageReply) returns (MessageReply);
+  rpc GetUsers(Empty) returns (UserList);
+  rpc PostPerfil(PerfilDTO) returns (MessageReply);
+  rpc PatchPerfil(PerfilDTO) returns (MessageReply);
+  rpc DeletePerfil(MessageReply) returns (MessageReply);
+  rpc GetPerfiles(Empty) returns (PerfilList);
+  rpc DeletePicture(MessageReply) returns (MessageReply);
+}
+
+message Empty{}
+
+// The request message containing the user's name.
+message UserDTO {
+	string username = 1;
+	string name = 2;
+	string password = 3;
+}
+
+message PerfilDTO {
+	string username = 1;
+	string descripcion = 2;
+	repeated string habilidades = 3;
+}
+
+message PerfilList{
+	repeated PerfilDTO perfiles = 1;
+}
+
+message UserPatchDTO{
+	string username = 1;
+	string name = 2;
+	string password = 3;
+	string newUsername = 4;
+}
+
+message UserList{
+	repeated UserDTO users = 1;
+}
+
+message MessageReply {
+  string message = 1;
+}

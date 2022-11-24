@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcServer", "GrpcServer\GrpcServer.csproj", "{DE8FC667-AE41-452B-A953-6E86AD8BD4CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcServer", "GrpcServer\GrpcServer.csproj", "{DE8FC667-AE41-452B-A953-6E86AD8BD4CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protocolo", "Protocolo\Protocolo.csproj", "{99DEB95B-7FFE-403F-BEC6-BD66C169E956}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Protocolo", "Protocolo\Protocolo.csproj", "{99DEB95B-7FFE-403F-BEC6-BD66C169E956}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogsEnvios", "LogsEnvios\LogsEnvios.csproj", "{1A4B3600-69E9-44DA-AA5A-35653E23FA43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogsEnvios", "LogsEnvios\LogsEnvios.csproj", "{1A4B3600-69E9-44DA-AA5A-35653E23FA43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClienT", "ClienT\ClienT.csproj", "{0EA95C70-23B7-456F-B1D7-079F78679EFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClienT", "ClienT\ClienT.csproj", "{0EA95C70-23B7-456F-B1D7-079F78679EFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogsServer", "LogsServer\LogsServer.csproj", "{04C65FA4-073A-4B9E-BBD2-5AD2FF36259E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogsServer", "LogsServer\LogsServer.csproj", "{04C65FA4-073A-4B9E-BBD2-5AD2FF36259E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminServer", "AdminServer\AdminServer.csproj", "{E6729211-D4EA-44B4-B38F-4FB9E3032DEF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{04C65FA4-073A-4B9E-BBD2-5AD2FF36259E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04C65FA4-073A-4B9E-BBD2-5AD2FF36259E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04C65FA4-073A-4B9E-BBD2-5AD2FF36259E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6729211-D4EA-44B4-B38F-4FB9E3032DEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6729211-D4EA-44B4-B38F-4FB9E3032DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6729211-D4EA-44B4-B38F-4FB9E3032DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6729211-D4EA-44B4-B38F-4FB9E3032DEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

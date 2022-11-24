@@ -7,6 +7,7 @@ C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsServer\bin\Debug\net5.0\Log
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsServer\bin\Debug\net5.0\LogsServer.dll
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsServer\bin\Debug\net5.0\LogsServer.pdb
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsServer\bin\Debug\net5.0\Microsoft.OpenApi.dll
+C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsServer\bin\Debug\net5.0\Newtonsoft.Json.dll
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsServer\bin\Debug\net5.0\RabbitMQ.Client.dll
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsServer\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsServer\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
@@ -27,4 +28,3 @@ C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsServer\obj\Debug\net5.0\ref
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsServer\obj\Debug\net5.0\LogsServer.pdb
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsServer\obj\Debug\net5.0\LogsServer.genruntimeconfig.cache
 C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsServer\obj\Debug\net5.0\ref\LogsServer.dll
-C:\Users\lucas\Desktop\PRedes\Entrega3\LkdinGrpc\LogsServer\bin\Debug\net5.0\Newtonsoft.Json.dll

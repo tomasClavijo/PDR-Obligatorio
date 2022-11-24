@@ -36,8 +36,6 @@ namespace LKAdin
             try
             {
                 Configurar();
-                Task recibir = RecibirClientesAsync();
-                Task.WaitAny(recibir);
             }
             catch (SocketException)
             {
@@ -66,9 +64,9 @@ namespace LKAdin
             }
         }
 
-        public static void EnviarLog(string mensaje)
+        public static void EnviarLog(string mensaje, string username)
         {
-            logs.EnvioLogs(mensaje);
+            logs.EnvioLogs(mensaje, username);
         }
         
         static async Task ManejarCliente(TcpClient cliente, ManejoDataSocket manejo, Controlador control, String rutaImagenes)
@@ -96,6 +94,7 @@ namespace LKAdin
                     int respuestaLargo = 0;
                     String respuesta = String.Empty;
                     String mensajeLog = String.Empty;
+                    String usernameLog = String.Empty;
 
                     if (tipo == "REQ")
                     {
@@ -111,6 +110,7 @@ namespace LKAdin
                                     guid = resultado;
                                     respuesta = guid.ToString() + "|" + "Usuario creado correctamente";
                                     mensajeLog = "Se creo el usuario " + userName + " con el nombre " + nombre;
+                                    usernameLog = userName;
                                 }
                                 catch (IndexOutOfRangeException)
                                 {
@@ -133,18 +133,18 @@ namespace LKAdin
                                     mensajeLog = "Se creo el perfil: ";
                                     String descripcion = mensajeDescomprimido[0];
                                     guid = Guid.Parse(mensajeDescomprimido[1]);
-                                    mensajeLog = "Descripción: " + descripcion;
+                                    mensajeLog += "Descripción: " + descripcion;
 
                                     List<String> habilidades = new List<string>();
                                     for (int i = 2; i < mensajeDescomprimido.Length; i++)
                                     {
-                                        mensajeLog = "\n Habilidad: " + mensajeDescomprimido[i];
+                                        mensajeLog += ", habilidad: " + mensajeDescomprimido[i];
                                         habilidades.Add(mensajeDescomprimido[i]);
                                     }
                                     Usuario usuario = control.BuscarUsuarioGuid(guid);
                                     control.CrearPerfil(usuario, descripcion, habilidades);
                                     respuesta = "Perfil creado correctamente";
-
+                                    usernameLog = usuario.UserName;
                                 }
                                 catch (ArgumentException e)
                                 {
@@ -175,6 +175,7 @@ namespace LKAdin
                                     gestor.ReceiveFile(rutaImagenes + "\\" + usuario.UserName);
                                     respuesta = "Imagen cargada correctamente";
                                     mensajeLog = "El usuario " + usuario.UserName + " asocio foto de perfil";
+                                    usernameLog = usuario.UserName;
                                 }
                                 catch (ArgumentException e)
                                 {
@@ -188,13 +189,17 @@ namespace LKAdin
 
                                 break;
                             case "51":
+                                
                                 nombre = mensajeString;
                                 respuesta = control.BuscarUsuarioNombre(nombre);
                                 tipo = "RES";
+                                mensajeLog = "Se realizó busqueda de perfil por nombre: " + nombre;
                                 break;
                             case "52":
                                 respuesta = control.BuscarPorHabilidad(mensajeDescomprimido);
                                 tipo = "RES";
+                                mensajeLog = "Se realizó busqueda de perfil por habilidades";
+
                                 break;
 
                             case "53":
@@ -205,7 +210,7 @@ namespace LKAdin
                                     Perfil perfiABuscar = control.BuscarPerfilUserId(idP);
                                     String perfilesId = control.BuscarPerfilId(idP);
                                     PropiedadesArchivo pA = new PropiedadesArchivo();
-                                    String rutaPerfilFoto = rutaImagenes + "\\" + perfiABuscar.Name + ".jpg";
+                                    String rutaPerfilFoto = rutaImagenes + "\\" + perfiABuscar.Usuario.Name + ".jpg";
                                     bool tieneFoto = pA.FileExists(rutaPerfilFoto);
                                     respuesta = perfilesId + "|" + tieneFoto.ToString();
 
@@ -226,7 +231,7 @@ namespace LKAdin
                                 try
                                 {
                                     Perfil perfiABuscar = control.BuscarPerfilUserId(perfilId);
-                                    String rutaPerfilFoto = rutaImagenes + "\\" + perfiABuscar.Name + ".jpg";
+                                    String rutaPerfilFoto = rutaImagenes + "\\" + perfiABuscar.Usuario.Name + ".jpg";
                                     GestorArchivos fileCommsHandler = new GestorArchivos(cliente);
                                     await fileCommsHandler.SendFileAsync(rutaPerfilFoto);
                                     respuesta = "OK";
@@ -246,6 +251,7 @@ namespace LKAdin
                                     control.EnviarMensaje(mensajeUsuario, perfilEmsior, perfilReceptor);
                                     respuesta = "Mensaje enviado";
                                     mensajeLog = "Se envio el mensaje " + mensajeUsuario + " al usuario " + nombreUsuario;
+                                    usernameLog = perfilEmsior.Usuario.UserName;
                                 }
                                 catch (ArgumentException e)
                                 {
@@ -267,7 +273,8 @@ namespace LKAdin
                                     {
                                         respuesta = control.MensajesRecibidos(perfilRecepcion, false);
                                     }
-                                    mensajeLog = "El usuario" + perfilRecepcion.Name + " consulto sus mensajes";
+                                    mensajeLog = "El usuario" + perfilRecepcion.Usuario.Name + " consulto sus mensajes";
+                                    usernameLog = perfilRecepcion.Usuario.UserName;
                                 }
                                 catch (ArgumentException e)
                                 {
@@ -280,7 +287,7 @@ namespace LKAdin
                         }
                         respuestaLargo = respuesta.Length;
 
-                        EnviarLog(mensajeLog);
+                        EnviarLog(mensajeLog, usernameLog);
                         await EstructuraDeProtocolo.envioAsync(tipo, comando, respuestaLargo, respuesta, manejo);
                     }
                 }

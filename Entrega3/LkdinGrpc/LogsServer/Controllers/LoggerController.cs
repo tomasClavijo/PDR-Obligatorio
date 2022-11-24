@@ -22,11 +22,14 @@ namespace LogsServer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] string username, [FromQuery] DateTime date, [FromQuery] string word)
         {
-            string response = JsonConvert.SerializeObject(_mq.GetMessages());
+            if (username is null)
+                username = "";
+            if (word is null)
+                word = "";
+            string response = JsonConvert.SerializeObject(_mq.GetMessages(username, date, word));
             return Ok(response);
-
         }
     }
 }

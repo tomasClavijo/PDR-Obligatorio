@@ -7,13 +7,13 @@
 
 using grpc = global::Grpc.Core;
 
-namespace GrpcServer {
+namespace GrpcServerProgram {
   /// <summary>
-  /// The greeting service definition.
+  /// The admin service definition.
   /// </summary>
-  public static partial class Greeter
+  public static partial class Admin
   {
-    static readonly string __ServiceName = "greet.Greeter";
+    static readonly string __ServiceName = "admin.Admin";
 
     static void __Helper_SerializeMessage(global::Google.Protobuf.IMessage message, grpc::SerializationContext context)
     {
@@ -45,33 +45,27 @@ namespace GrpcServer {
       return parser.ParseFrom(context.PayloadAsNewBuffer());
     }
 
-    static readonly grpc::Marshaller<global::GrpcServer.HelloRequest> __Marshaller_greet_HelloRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::GrpcServer.HelloRequest.Parser));
-    static readonly grpc::Marshaller<global::GrpcServer.HelloReply> __Marshaller_greet_HelloReply = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::GrpcServer.HelloReply.Parser));
+    static readonly grpc::Marshaller<global::GrpcServerProgram.UserDTO> __Marshaller_admin_UserDTO = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::GrpcServerProgram.UserDTO.Parser));
+    static readonly grpc::Marshaller<global::GrpcServerProgram.MessageReply> __Marshaller_admin_MessageReply = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::GrpcServerProgram.MessageReply.Parser));
 
-    static readonly grpc::Method<global::GrpcServer.HelloRequest, global::GrpcServer.HelloReply> __Method_SayHello = new grpc::Method<global::GrpcServer.HelloRequest, global::GrpcServer.HelloReply>(
+    static readonly grpc::Method<global::GrpcServerProgram.UserDTO, global::GrpcServerProgram.MessageReply> __Method_PostUser = new grpc::Method<global::GrpcServerProgram.UserDTO, global::GrpcServerProgram.MessageReply>(
         grpc::MethodType.Unary,
         __ServiceName,
-        "SayHello",
-        __Marshaller_greet_HelloRequest,
-        __Marshaller_greet_HelloReply);
+        "PostUser",
+        __Marshaller_admin_UserDTO,
+        __Marshaller_admin_MessageReply);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
     {
-      get { return global::GrpcServer.GreetReflection.Descriptor.Services[0]; }
+      get { return global::GrpcServerProgram.GreetReflection.Descriptor.Services[0]; }
     }
 
-    /// <summary>Base class for server-side implementations of Greeter</summary>
-    [grpc::BindServiceMethod(typeof(Greeter), "BindService")]
-    public abstract partial class GreeterBase
+    /// <summary>Base class for server-side implementations of Admin</summary>
+    [grpc::BindServiceMethod(typeof(Admin), "BindService")]
+    public abstract partial class AdminBase
     {
-      /// <summary>
-      /// Sends a greeting
-      /// </summary>
-      /// <param name="request">The request received from the client.</param>
-      /// <param name="context">The context of the server-side call handler being invoked.</param>
-      /// <returns>The response to send back to the client (wrapped by a task).</returns>
-      public virtual global::System.Threading.Tasks.Task<global::GrpcServer.HelloReply> SayHello(global::GrpcServer.HelloRequest request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::GrpcServerProgram.MessageReply> PostUser(global::GrpcServerProgram.UserDTO request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -80,19 +74,19 @@ namespace GrpcServer {
 
     /// <summary>Creates service definition that can be registered with a server</summary>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static grpc::ServerServiceDefinition BindService(GreeterBase serviceImpl)
+    public static grpc::ServerServiceDefinition BindService(AdminBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_SayHello, serviceImpl.SayHello).Build();
+          .AddMethod(__Method_PostUser, serviceImpl.PostUser).Build();
     }
 
     /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
     /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
     /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static void BindService(grpc::ServiceBinderBase serviceBinder, GreeterBase serviceImpl)
+    public static void BindService(grpc::ServiceBinderBase serviceBinder, AdminBase serviceImpl)
     {
-      serviceBinder.AddMethod(__Method_SayHello, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::GrpcServer.HelloRequest, global::GrpcServer.HelloReply>(serviceImpl.SayHello));
+      serviceBinder.AddMethod(__Method_PostUser, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::GrpcServerProgram.UserDTO, global::GrpcServerProgram.MessageReply>(serviceImpl.PostUser));
     }
 
   }
